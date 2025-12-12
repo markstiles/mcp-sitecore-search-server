@@ -1,0 +1,1 @@
+# mcp-sitecore-search-server
