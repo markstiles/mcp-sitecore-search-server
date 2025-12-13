@@ -1,0 +1,1335 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "description": "Use the Events API for Sitecore Search to track events. Event tracking is essential for generating site metrics such as views, visits, revenue, conversions, and so on.\n\nThe Events API has one endpoint and many objects and keys that you can use to track funnel events, widget events, and request events.\nSee the schema and descriptions to learn how to use the objects and keys available.\n\nTo view the Events API endpoint for your domain, go to the Developer Resources page of the Customer Engagement Console (CEC). You can use the `POST` method to call this API.\n\nFor more information on how to use this API and for sample requests, see the [Sitecore Search developer documentation](https://doc.sitecore.com/search/en/developers/search-developer-guide/using-the-events-api-to-track-events.html).",
+    "title": "Events API Reference",
+    "version": "1.0",
+    "x-logo": {
+      "altText": "Events API Service",
+      "url": "https://content-search-api-doc.rfksrv.com/logo.png"
+    }
+  },
+  "paths": {
+    "/apis/{version}/{ckey}/an": {
+      "get": {
+        "description": "Publishes the Event Payload sent in the query params to the events Kafka Topic after validating and\nenriching the event. \"apis\" is the customer facing endpoint that is directly called to push the events via the API.",
+        "tags": [
+          "publish"
+        ],
+        "operationId": "GetProductDataObjV2",
+        "parameters": [
+          {
+            "example": "11269-125757321",
+            "x-go-name": "Ckey",
+            "description": "ckey",
+            "name": "ckey",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "example": "11269-125757321",
+            "x-go-name": "Version",
+            "description": "version",
+            "name": "version",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "x-go-name": "Data",
+            "description": "Sample Request: {\"value\":{\"products\":[{\"sku\":\"1030\",\"quantity\":99,\"price\":999.99,\"price_original\":999.99}]},\"type\":\"a2c\",\"name\":\"cart\",\"t\":1625144306397,\"t0\":1625144306397,\"uuid\":\"125757325-qg-2q-4d-1p-7vbcxmrmt9nq8f5g8ff4-1640566878692\"}",
+            "name": "data",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "$ref": "#/components/responses/EventResponseV1"
+          }
+        }
+      },
+      "post": {
+        "description": "Publishes the Event Payload sent in the body to the events Kafka Topic after validating and\nenriching the event. \"apis\" is the customer facing endpoint that is directly called to push the events via the API.",
+        "tags": [
+          "publish"
+        ],
+        "operationId": "PostProductDataObjV2",
+        "parameters": [
+          {
+            "example": "11269-125757321",
+            "x-go-name": "Ckey",
+            "description": "ckey",
+            "name": "ckey",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "example": "11269-125757321",
+            "x-go-name": "Version",
+            "description": "version",
+            "name": "version",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DataObjV2"
+              }
+            }
+          },
+          "description": "data",
+          "x-go-name": "Data"
+        },
+        "responses": {
+          "default": {
+            "$ref": "#/components/responses/EventResponseV1"
+          }
+        }
+      }
+    },
+    "/event/healthcheck": {
+      "get": {
+        "description": "Check for external dependencies",
+        "tags": [
+          "healthcheck"
+        ],
+        "summary": "Returns 200 if the service is up.",
+        "operationId": "Healthcheck",
+        "responses": {
+          "default": {
+            "description": "Default response"
+          }
+        }
+      }
+    },
+    "/event/ping": {
+      "get": {
+        "description": "Do not check for external dependencies",
+        "tags": [
+          "healthcheck"
+        ],
+        "summary": "Returns 200 if the service is up.",
+        "operationId": "Ping",
+        "responses": {
+          "default": {
+            "description": "Default response"
+          }
+        }
+      }
+    },
+    "/event/v3/publish/{ckey}": {
+      "post": {
+        "description": "Publishes the Event Payload sent in the body to the content-events Kafka Topic after validating and enriching\nthe event.",
+        "tags": [
+          "publish"
+        ],
+        "operationId": "ContentEventRequestV3Model",
+        "parameters": [
+          {
+            "x-go-name": "Ckey",
+            "name": "ckey",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DataObjV3"
+              }
+            }
+          },
+          "x-go-name": "Data"
+        },
+        "responses": {
+          "default": {
+            "$ref": "#/components/responses/ResponseV3"
+          }
+        }
+      }
+    },
+    "/event/v3/validate/{ckey}": {
+      "post": {
+        "description": "The Event Payload sent in the body is validated using the rules defined\nin the entity_validation_config.json file.",
+        "tags": [
+          "validate"
+        ],
+        "operationId": "PostValidateEventRequest",
+        "parameters": [
+          {
+            "x-go-name": "Ckey",
+            "name": "ckey",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/PostValidateEventRequestData"
+        },
+        "responses": {
+          "default": {
+            "$ref": "#/components/responses/ValidateEventResponse"
+          }
+        }
+      }
+    },
+    "/event/v4/publish/{ckey}": {
+      "post": {
+        "description": "Use the Events API to send funnel, widget, and request events to Sitecore Search.",
+        "tags": [
+          "publish"
+        ],
+        "summary": "Events API",
+        "operationId": "EntityEventRequestV4Model",
+        "parameters": [
+          {
+            "x-go-name": "Ckey",
+            "description": "Your unique identifier. Your `ckey`, or customer key, is a combination of your account ID and your domain ID in this format: `<accountID>-<domainID>`.\nFor example, if your account ID is `17595242` and your domain ID is `15987155`, your `ckey` is `17595242-159871551`.\nTo view your `ckey` go to Developer Resources, API Access in the Customer Engagement Console (CEC).\n\nYou can also pass your Domain ID as a value for `ckey`.",
+            "name": "ckey",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EntityEventPayloadModel"
+              }
+            }
+          },
+          "required": true,
+          "x-go-name": "Data"
+        },
+        "responses": {
+          "default": {
+            "$ref": "#/components/responses/ResponseV3"
+          }
+        }
+      }
+    },
+    "/event/v4/validate/{ckey}": {
+      "post": {
+        "description": "The Event Payload sent in the body is validated using the rules defined\nin the entity_validation_config.json file.",
+        "tags": [
+          "validate"
+        ],
+        "operationId": "PostValidateEventRequest",
+        "parameters": [
+          {
+            "x-go-name": "Ckey",
+            "name": "ckey",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/PostValidateEventRequestData"
+        },
+        "responses": {
+          "default": {
+            "$ref": "#/components/responses/ValidateEventResponse"
+          }
+        }
+      }
+    },
+    "/rfkj/{version}/{ckey}/an": {
+      "get": {
+        "description": "Publishes the Event Payload sent in the query params to the events Kafka Topic after validating and\nenriching the event. rfkj is a JS & rfk.push() endpoint that is used by the JS SDK to push the events.",
+        "tags": [
+          "publish"
+        ],
+        "operationId": "GetProductDataObjV1",
+        "parameters": [
+          {
+            "example": "11269-125757322",
+            "x-go-name": "Ckey",
+            "description": "ckey",
+            "name": "ckey",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "example": "1",
+            "x-go-name": "Version",
+            "description": "version",
+            "name": "version",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "x-go-name": "Data",
+            "description": "Sample Request: {\"value\":{\"products\":[{\"sku\":\"1030\",\"quantity\":99,\"price\":999.99,\"price_original\":999.99}]},\"type\":\"a2c\",\"name\":\"cart\",\"t\":1625144306397,\"t0\":1625144306397,\"uid\":\"125757325-qg-2q-4d-1p-7vbcxmrmt9nq8f5g8ff4-1640566878692\"}",
+            "name": "data",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "$ref": "#/components/responses/EventResponseV1"
+          }
+        }
+      },
+      "post": {
+        "description": "Publishes the Event Payload sent in the query params to the events Kafka Topic after validating and\nenriching the event. rfkj is a JS & rfk.push() endpoint that is used by the JS SDK to push the events.",
+        "tags": [
+          "publish"
+        ],
+        "operationId": "PostProductDataObjV1",
+        "parameters": [
+          {
+            "example": "11269-125757321",
+            "x-go-name": "Ckey",
+            "description": "ckey",
+            "name": "ckey",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "example": "11269-125757321",
+            "x-go-name": "Version",
+            "description": "version",
+            "name": "version",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DataObjV1"
+              }
+            }
+          },
+          "description": "data",
+          "x-go-name": "Data"
+        },
+        "responses": {
+          "default": {
+            "$ref": "#/components/responses/EventResponseV1"
+          }
+        }
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "https://events-api.staging.rfksrv.com"
+    }
+  ],
+  "components": {
+    "responses": {
+      "EventResponseV1": {
+        "description": "",
+        "headers": {
+          "err": {
+            "description": "Error message"
+          },
+          "success": {
+            "description": "Success Flag",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "additionalProperties": {}
+            }
+          }
+        }
+      },
+      "ResponseV3": {
+        "description": "",
+        "headers": {
+          "debug_object": {
+            "description": "Event Payload"
+          },
+          "success": {
+            "description": "Success Flag",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/DebugObject"
+            }
+          }
+        }
+      },
+      "ValidateEventResponse": {
+        "description": "",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ValidationResult"
+            }
+          }
+        }
+      }
+    },
+    "requestBodies": {
+      "PostValidateEventRequestData": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "string"
+            }
+          }
+        },
+        "description": "data: json event to be validated\nSample request:\n{\n\"action\": \"view\",\n\"ckey\": \"137875303-159871551\",\n\"client_time_ms\": 1651140370835467,\n\"name\": \"content_page\",\n\"page_load_time_ms\": 1651140370835469,\n\"server_time_ms\": 1651140372023,\n\"uid\": \"159871551-qu-y8-4u-1p-9d6f1fd7f3934defa6505f85b6bd0709-1651034838239\",\n\"uuid\": \"159871551-qu-y8-4u-1p-9d6f1fd7f3934defa6505f85b6bd0709-1651034838239\",\n\"value\": {\n\"contents\": [\n{\n\"document_id\": \"f734ca162d862926208624da065982887b3c686a3f59adda0d71e20a\"\n}\n],\n\"context\": {\n\"browser\": {\n\"user_agent\": \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.83 Safari/537.36\"\n},\n\"geo\": {\n\"ip\": \"23.177.231.16\"\n},\n\"page\": {\n\"locale_country\": \"us\",\n\"locale_currency\": \"do\",\n\"locale_language\": \"en\",\n\"referrer\": \"google search\",\n\"title\": \"content page\",\n\"uri\": \"www.sitecore.com\"\n}\n}\n}\n}",
+        "required": true,
+        "x-go-name": "EventPayload"
+      }
+    },
+    "schemas": {
+      "Address": {
+        "type": "object",
+        "properties": {
+          "address_line_1": {
+            "description": "First line of the visitor's address.",
+            "type": "string",
+            "x-go-name": "AddressLine1",
+            "example": "9090 Main Street"
+          },
+          "address_line_2": {
+            "description": "Second line of the visitor's address.",
+            "type": "string",
+            "x-go-name": "AddressLine2",
+            "example": "Unit 204"
+          },
+          "country": {
+            "description": "Two-letter country code as per ISO Alpha 2. The defaults is `US`.",
+            "type": "string",
+            "x-go-name": "Country",
+            "example": "US"
+          },
+          "state": {
+            "description": "Two-letter state code if the address is an American address.",
+            "type": "string",
+            "x-go-name": "State",
+            "example": "CA"
+          },
+          "zip": {
+            "description": "Five-digit zip code if the address is an American address.",
+            "type": "string",
+            "x-go-name": "Zip",
+            "example": "99999"
+          }
+        },
+        "x-go-package": "github.com/Reflektion/dp-data-events-api/cal"
+      },
+      "Browser": {
+        "type": "object",
+        "properties": {
+          "app_type": {
+            "description": "The type of app the visitor is on. This can be either `browser`, `webview`, or `native`. Sitecore automatically gets this value from the `user_agent`.",
+            "type": "string",
+            "x-go-name": "AppType",
+            "example": "browser"
+          },
+          "device": {
+            "description": "Device of the visitor. This can be either `pc`, `mobile`, or `tablet`. Sitecore automatically gets this value from the `user_agent`.",
+            "type": "string",
+            "x-go-name": "Device",
+            "example": "mobile"
+          },
+          "user_agent": {
+            "description": "The visitor's browser user agent. When you pass this value, you must follow industry conventions so that Sitecore can parse the `device` and `app_type`.",
+            "type": "string",
+            "x-go-name": "UserAgent",
+            "example": "Mozilla/5.0 (iPhone14,6; U; CPU iPhone OS 15_4 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) Version/10.0 Mobile/19E241 Safari/602.1"
+          }
+        },
+        "x-go-package": "github.com/Reflektion/dp-data-events-api/cal"
+      },
+      "Content": {
+        "type": "object",
+        "properties": {
+          "author": {
+            "type": "string",
+            "x-go-name": "Author",
+            "example": "ASD"
+          },
+          "content_type": {
+            "type": "string",
+            "x-go-name": "ContentType",
+            "example": "article"
+          },
+          "document_id": {
+            "type": "string",
+            "x-go-name": "DocumentId",
+            "example": "678"
+          },
+          "uri": {
+            "type": "string",
+            "x-go-name": "Uri",
+            "example": "https://docs.test.com/en/678/"
+          }
+        },
+        "x-go-package": "github.com/Reflektion/dp-data-events-api/cal"
+      },
+      "ContentEventPayloadModel": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "description": "action",
+            "type": "string",
+            "x-go-name": "Action",
+            "example": "widget"
+          },
+          "action_sub_type": {
+            "type": "string",
+            "x-go-name": "ActionSubType"
+          },
+          "client_time_ms": {
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "ClientTimeMs",
+            "example": 1660088972963
+          },
+          "interaction_id": {
+            "type": "string",
+            "x-go-name": "InteractionId",
+            "example": "test_interaction_id"
+          },
+          "name": {
+            "description": "name",
+            "type": "string",
+            "x-go-name": "Name",
+            "example": "view"
+          },
+          "page_load_time_ms": {
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "PageLoadTimeMs",
+            "example": 1660088972963
+          },
+          "request_id": {
+            "type": "string",
+            "x-go-name": "RequestId",
+            "example": "test_request_id"
+          },
+          "user_id": {
+            "type": "string",
+            "x-go-name": "UserId"
+          },
+          "uuid": {
+            "type": "string",
+            "x-go-name": "Uuid",
+            "example": "125757322-qu-y8-4u-1p-j4y9f17bqqlrqtl36uqf-1647596322309"
+          },
+          "value": {
+            "$ref": "#/components/schemas/ContentValueObj"
+          }
+        },
+        "x-go-package": "github.com/Reflektion/dp-data-events-api/cal"
+      },
+      "ContentValueObj": {
+        "type": "object",
+        "properties": {
+          "contents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Content"
+            },
+            "x-go-name": "Contents"
+          },
+          "context": {
+            "$ref": "#/components/schemas/Context"
+          },
+          "rfk_id": {
+            "type": "string",
+            "x-go-name": "RfkId",
+            "example": "rfkid_1"
+          }
+        },
+        "x-go-package": "github.com/Reflektion/dp-data-events-api/cal"
+      },
+      "Context": {
+        "type": "object",
+        "properties": {
+          "browser": {
+            "$ref": "#/components/schemas/Browser"
+          },
+          "geo": {
+            "$ref": "#/components/schemas/Geo"
+          },
+          "page": {
+            "$ref": "#/components/schemas/Page"
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          }
+        },
+        "x-go-package": "github.com/Reflektion/dp-data-events-api/cal"
+      },
+      "DataObjV1": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ProductEventPayloadV1"
+          }
+        },
+        "x-go-package": "github.com/Reflektion/dp-data-events-api/cal"
+      },
+      "DataObjV2": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ProductEventPayloadV2"
+          }
+        },
+        "x-go-package": "github.com/Reflektion/dp-data-events-api/cal"
+      },
+      "DataObjV3": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ContentEventPayloadModel"
+          }
+        },
+        "x-go-package": "github.com/Reflektion/dp-data-events-api/cal"
+      },
+      "DataObjV4": {
+        "description": "DataObjV4 represents the Data Object that should contain the event payload",
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/EntityEventPayloadModel"
+          }
+        },
+        "x-go-package": "github.com/Reflektion/dp-data-events-api/cal"
+      },
+      "DebugObject": {
+        "type": "object",
+        "properties": {
+          "event_payload": {
+            "description": "Event Payload\n\nin: body",
+            "type": "object",
+            "additionalProperties": {},
+            "x-go-name": "EventPayload"
+          }
+        },
+        "x-go-package": "github.com/Reflektion/dp-data-events-api/cal"
+      },
+      "Entity": {
+        "type": "object",
+        "properties": {
+          "attributes": {
+            "$ref": "#/components/schemas/EntityAttributes"
+          },
+          "entity_subtype": {
+            "description": "The value of the \"type\" attribute for this item. For example, a content entity item might have `blog` or `article` as options for the `entity_subtype`.\"\nYou can get this value from the `widgets.entity.content.type` field in the Search and Recommendation API response.",
+            "type": "string",
+            "x-go-name": "EntitySubType",
+            "example": "article"
+          },
+          "entity_type": {
+            "description": "Entity the visitor interacted with.\nYou can get this value from the `widgets.entity` field  in the Search and Recommendation API response.",
+            "type": "string",
+            "x-go-name": "EntityType",
+            "example": "content, product"
+          },
+          "id": {
+            "description": "External unique identifier for the entity.",
+            "type": "string",
+            "x-go-name": "Id",
+            "example": "678"
+          },
+          "source_id": {
+            "description": "Connector id assigned to source of an entity while ingestion.",
+            "type": "string",
+            "x-go-name": "SourceId",
+            "example": "sourceId123"
+          },
+          "uri": {
+            "description": "URI of the entity.",
+            "type": "string",
+            "x-go-name": "Uri",
+            "example": "https://www.sitecore.com/products/xm-cloud"
+          }
+        },
+        "x-go-package": "github.com/Reflektion/dp-data-events-api/cal"
+      },
+      "EntityAttributes": {
+        "type": "object",
+        "properties": {
+          "author": {
+            "description": "User in your domain who created the entity. ",
+            "type": "string",
+            "x-go-name": "Author",
+            "example": "XYZ"
+          }
+        },
+        "x-go-package": "github.com/Reflektion/dp-data-events-api/cal"
+      },
+      "EntityEventPayloadModel": {
+        "type": "object",
+        "required": [
+          "name",
+          "action"
+        ],
+        "properties": {
+          "action": {
+            "description": "The action in the event. This is a verb that describes what the user does to fire the event. You can send the following values: `view`, `click`, `add`, `remove`,  `identify`,\nor a verb describing a custom event.\n\nUse both the `action` and `action_sub_type` keys  to tell Sitecore Search the exact type of event you want to send.",
+            "type": "string",
+            "x-go-name": "Action",
+            "example": "add"
+          },
+          "action_cause": {
+            "description": "The specific location in the search widget where the action happened. You can pass the following values:\n\n•`entity`: Send this when the visitor clicks the content item. For example, you can send this when the visitor\nclicks a blog in the search results.\n\n•`category`: Send this when the visitor clicks a category. For example, you can send this when the visitor\nclicks the 'news' category.\n\n• `filter`: Send this when the visitor clicks a facet or filter. For example, you can send this when the visitor filters\ncontent items by review ratings greater than `7`.\n\n• `suggestion`: Send this when the visitor clicks a suggested content item. For example, you can send this when the visitor\nsearches for a keyword and then clicks a content item that appears in 'the people also searched for' section\nabove the search results.",
+            "type": "string",
+            "x-go-name": "ActionCause",
+            "example": "entity"
+          },
+          "action_sub_type": {
+            "description": "Use this key to qualify an event as a conversion. You can pass `conversion` as a value.\nFor example, if you consider an `add` `bookmark` event as a conversion, pass `add` as the action, `bookmark` as the name,\nand `conversion` as the `action_sub_type`.",
+            "type": "string",
+            "x-go-name": "ActionSubType",
+            "example": "conversion"
+          },
+          "client_time_ms": {
+            "description": "Time at which the event was logged on your system, in milliseconds.",
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "ClientTimeMs",
+            "example": 1660088972963
+          },
+          "interaction_id": {
+            "description": "Identifier that groups all visitor interactions with a single widget or search. Use this ID to group complex visitor interactions with widgets, like in a preview search widget.\nSitecore Search does not generate this ID. You must create and pass this ID if you want to track when a visitor starts to interact with a widget or search\nand when they complete the interaction.",
+            "type": "string",
+            "x-go-name": "InteractionId",
+            "example": "test_interaction_id"
+          },
+          "name": {
+            "description": "The name of the event. Use this key along with `action` to tell Sitecore Search the type of event you want to pass.\nDepending on the `action`, select from a predetermined list of `name` values.\n\nNote that the following descriptions refer to an 'entity'. For the Events API, an entity refers to a single search result item.\nThis is different from the domain-level entity you set up in the CEC.\n\nFor the `view` action, you can pass these `name` values:\n\n• pass `widget` when the visitor views a Sitecore widget.\n\n• pass `entity_page` when the visitor views a page that has been indexed by Search — this includes product, category, and content pages.\n\n• pass other pages like `confirm`, `category`, `search`, `detail`, or `quickview` when the visitor views a page that was manually configured in Search, such as the [landing page](https://doc.sitecore.com/search/en/users/search-user-guide/create-a-landing-page.html), [listing page](https://doc.sitecore.com/search/en/users/search-user-guide/create-a-category-listing-page.html), and [detail page](https://doc.sitecore.com/search/en/users/search-user-guide/create-a-detail-page.html).\n\nFor the `click` action, pass `widget` as the `name` value. Use this when a visitor clicks an item, facet, or any navigation button.\n\nFor the `add` action, you can pass these `name` values:\n\n• pass `bookmark` when the visitor bookmarks an item.\n\n• pass `review` when the visitor adds a review to an item.\n\n• pass `compare` when the visitor adds a item entity to a compare tool.\n\n• pass `cart` when the visitor adds an entity variation to their cart from the entity page, quick view page, or category page.\n\n• pass `wishlist` when the visitor adds an entity variation to their wish list from the content or quick view page.\n\n• pass `like` when the visitor likes an item from the content page or quick view page.\n\n• pass `upvote` when the visitor upvotes an item from the entity page, quick view page, or category page.\n\n• pass `download` when the visitor downloads an item.\n\n• pass `order_confirm` when the visitor completes an order and reaches the order confirmed page, for example. The order can be a product order or content subscription.\n\nFor the `remove` action, you can pass these `name` values:\n\n• pass `bookmark` when the visitor removes an item that they previously bookmarked.\n\n• pass `review` when the visitor adds a review to an entity.\n\n• pass `compare` when the visitor removes an item from a compare tool.\n\n• pass `like` when the visitor removes a like from an item they previously liked.\n\n• pass `wishlist` when the visitor removes an entity variation from a wish list.\n\nFor the `get` action, pass `request`. This is a unified call that identifies all features in the Search and Recommendation request.\n\nFor the `identify` action, you can pass these `names`:\n\n• pass `info` to send non-anonymous visitor-related information to Sitecore Search. For example, send an `identify` `info` event when you send a visitor's Facebook ID.\nSitecore Search uses this event to perform identity stitching.\n\n• pass `login` when the visitor has logged in to Sitecore.\n\n• pass `signup` when visitor performs a signup-related task subscribing to emails.\n\nFor custom events, you can send a custom `name`.",
+            "type": "string",
+            "x-go-name": "Name",
+            "example": "bookmark"
+          },
+          "page_load_time_ms": {
+            "description": "Time at which the page loaded.",
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "PageLoadTimeMs",
+            "example": 1660088972963
+          },
+          "request_id": {
+            "description": "Sitecore-generated ID for the search request. You can get this value from the response of a Search and Recommendation API request.",
+            "type": "string",
+            "x-go-name": "RequestId",
+            "example": "test_request_id"
+          },
+          "user_id": {
+            "description": "Optional visitor ID that you use in your system. This is different from the `uuid` that you generate. You must send Sitecore Search either the `user_id` or the `uuid`.",
+            "type": "string",
+            "x-go-name": "UserId"
+          },
+          "uuid": {
+            "description": "Anonymous ID that you generate to track visitors. You must send either the `uuid` or the `user_id` to Sitecore Search.",
+            "type": "string",
+            "x-go-name": "Uuid",
+            "example": "125757322-qu-y8-4u-1p-j4y9f17bqqlrqtl36uqf-1647596322309"
+          },
+          "value": {
+            "$ref": "#/components/schemas/EntityValueObj"
+          }
+        },
+        "x-go-package": "github.com/Reflektion/dp-data-events-api/cal"
+      },
+      "EntityValueObj": {
+        "type": "object",
+        "required": [
+          "entities"
+        ],
+        "properties": {
+          "context": {
+            "$ref": "#/components/schemas/Context"
+          },
+          "entities": {
+            "description": "Array of objects containing entity information. Note that for the Events API, an entity refers to a single search result item.\nThis is different from the domain-level entity you set up in the CEC.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Entity"
+            },
+            "x-go-name": "Entities"
+          },
+          "filters": {
+            "description": "Filters used by a visitor to quiickly find items.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Filter"
+            },
+            "x-go-name": "Filters"
+          },
+          "index": {
+            "description": "Position of the item that was clicked. For example, if the visitor clicked the fourth item in the search results page, pass `4`.",
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "Index"
+          },
+          "request": {
+            "$ref": "#/components/schemas/Request"
+          },
+          "review": {
+            "$ref": "#/components/schemas/Review"
+          },
+          "rfk_id": {
+            "description": "Unique ID for the widget for which you want to send events. You configure this ID in the CEC when you create a widget. For example, pass `rfkid_7` or `rfkid_6`.",
+            "type": "string",
+            "x-go-name": "RfkId",
+            "example": "rfkid_1"
+          },
+          "transaction": {
+            "$ref": "#/components/schemas/Transaction"
+          }
+        },
+        "x-go-package": "github.com/Reflektion/dp-data-events-api/cal"
+      },
+      "EventPayload": {
+        "type": "object",
+        "additionalProperties": {},
+        "x-go-package": "github.com/Reflektion/dp-data-events-api/cal"
+      },
+      "Filter": {
+        "type": "object",
+        "properties": {
+          "display_name": {
+            "description": "For suggestions, the text value of the suggestion the visitor clicked. \nGet this from the `suggestion.text` field in the Search API response.  \n\nNote: For suggestions, `displayName` and `value` are the same. \n\nFor facets, this is the facet value name that visitors see. \nGet this value from the `facet.value.text` field in the Search API response. \nFor example, if the user selects the value JRR Tolkein in the Author facet, \nthe `facet.value.text` is `JRR Tolkien`. ",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-go-name": "DisplayName",
+            "example": "JRR Tolkien"
+          },
+          "end_value": {
+            "description": "The highest value in a histogram facet. \nGet this from the `facet.value.max` field in the Search API response. \nFor example, in a Review facet, you pass `8-10`.   \n\nNote: If you have a histogram facet, pass `end_value` and `start_value` and not `value`. \nIf you have a non-histogram facet, pass only `value` and not `end_value` or `start_value`",
+            "type": "string",
+            "x-go-name": "EndValue",
+            "example": "8-10"
+          },
+          "facet_position": {
+            "description": "For suggestions, the position of the suggestion category (see `title`)\nrelative to other suggestion categories on the page. \nPass `0` for the first suggestion category, `1 for the second suggestion category, and so on. \nFor example, a visitor sees three suggestion categories at the top of a Search results page, Trending, Most clicked, and Newest.\nIf the visitor clicks a suggestion within the second category, Most Clicked, pass `1`.  \n\nFor facets, the position of this facet relative to other facets on the page.\nPass `0` if this is the first facet, `1` if this is the second facet, and so on. ",
+            "type": "string",
+            "x-go-name": "FacetPosition",
+            "example": "1"
+          },
+          "field": {
+            "type": "string",
+            "x-go-name": "Field"
+          },
+          "name": {
+            "description": "For suggestions,  the name of the suggestion block an administrator configured in the CEC.\nGet this value from the Administration > Domain Settings > \nFeature Configuration > Suggestion Blocks section of the CEC.\nFor example, you  pass `title_context_aware`. \n\nFor facets, the API name of the facet the visitor interacted with. \nGet this from the facet.name field in the Search API response. \nFor example, if the visitor interacted with the Author facet, \nthe value of `facet.name` is `author`.  ",
+            "type": "string",
+            "x-go-name": "Name",
+            "example": "author "
+          },
+          "start_value": {
+            "description": "The lowest value in a histogram facet. \nGet this from the `facet.value.min` field in the Search API response. \nFor example, in a Review facet, you can pass `0-2`.   \n\nNote: If you have a histogram facet, pass `end_value` and `start_value` and not `value`. \nIf you have a non-histogram facet, pass only `value` and not `end_value` or `start_value`",
+            "type": "string",
+            "x-go-name": "StartValue",
+            "example": "0-2"
+          },
+          "title": {
+            "description": "For suggestions, the UI-based title that groups suggestions. \nFor example, there might be a suggestion category called Trending. \n\nFor facets, the UI-based label of the facet the visitor interacted with. \nGet this from the `facet.label` field in the search API response. \nFor example, if the user interacted witht he Author facet, the valuer of facet.label is `Author`.",
+            "type": "string",
+            "x-go-name": "Title",
+            "example": "Author"
+          },
+          "value": {
+            "description": "For suggestions, the text value of the suggestion the visitor clicked. \nGet this from the `suggestion.text` field in the search API response. \n\nFor facets, this is the ID of the facet value the visitor interacted with. \nGet this from the `facet.value.id` field in the Search API response. \nFor example, if the visitor selected the value JRR Tolkien in the Author facet, \npass the ID of the JRR Tolkien facet value, say, `facetid_eyJ0eXBlIjoiZXE`. \n\nNote: If you have a non-histogram facet, pass `value` and not `end_value` or `start_value` . \nIf you have a histogram facet, pass `end_value` and `start_value`, and not `value`. ",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-go-name": "Value",
+            "example": "facetid_eyJ0eXBlIjoiZXE "
+          },
+          "value_position": {
+            "description": "For suggestions, the position of the suggestion the visitor clicked \nrelative to the other suggestions that appeared. \nPass `0` for the first suggestion value, `1` for the second suggestion value, and so on. \nFor example, if the visitor sees three suggestions in a preview search \nand clicks the second suggestion, pass `1`. \n\nFor facets, the position of the facet value the visitor selected \nrelative to the other values in this facet. \nPass `0` for the first facet value, `1` for the second facet value, and so on. \nFor example, if the visitor clicks the third facet value, pass `2`. ",
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "x-go-name": "ValuePosition",
+            "example": "2"
+          }
+        },
+        "x-go-package": "github.com/Reflektion/dp-data-events-api/cal"
+      },
+      "Geo": {
+        "type": "object",
+        "required": [
+          "ip"
+        ],
+        "properties": {
+          "city": {
+            "description": "Full name of the city that the visitor is in. If you pass the `ip` key, Sitecore Search automatically computes this value and ignores any value you pass as `city`.",
+            "type": "string",
+            "x-go-name": "City",
+            "example": "San Francisco"
+          },
+          "country": {
+            "description": "Two-letter country code in the ISO 3166 Alpha 2 format. For example, use `us` for the United States.",
+            "type": "string",
+            "x-go-name": "Country",
+            "example": "us"
+          },
+          "ip": {
+            "description": "IP address of browser or native application of the system the visitor is on. Do not pass the IP address of your proxy.\nIf you do not pass `ip`, Sitecore gets the IP address from the `X-Forwarded-For` request header. If your request does not have an `X-Forwarded-For` header,\nSitecore uses the request's IP address.",
+            "type": "string",
+            "x-go-name": "Ip",
+            "example": "207.242.49.4"
+          },
+          "state": {
+            "description": "Full name of the state or province that the visitor is in. If you pass the `ip` key, Sitecore Search automatically computes this value and ignores any value you pass as `state`.",
+            "type": "string",
+            "x-go-name": "State",
+            "example": "CA"
+          },
+          "zip": {
+            "description": "Zip or postal code of the location that the visitor is in. If you pass the `ip` key, Sitecore Search automatically computes this value and ignores any value you pass as `zip`.",
+            "type": "string",
+            "x-go-name": "Zip",
+            "example": "94403"
+          }
+        },
+        "x-go-package": "github.com/Reflektion/dp-data-events-api/cal"
+      },
+      "Header": {
+        "description": "The keys should be in canonical form, as returned by\n[CanonicalHeaderKey].",
+        "type": "object",
+        "title": "A Header represents the key-value pairs in an HTTP header.",
+        "additionalProperties": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "x-go-package": "net/http"
+      },
+      "Issue": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string",
+            "x-go-name": "FieldName"
+          },
+          "field_value": {
+            "type": "string",
+            "x-go-name": "FieldValue"
+          },
+          "msg": {
+            "type": "string",
+            "x-go-name": "ErrorMessage"
+          },
+          "path": {
+            "type": "string",
+            "x-go-name": "Path"
+          },
+          "severity": {
+            "type": "string",
+            "x-go-name": "Severity"
+          },
+          "type": {
+            "type": "string",
+            "x-go-name": "Type"
+          }
+        },
+        "x-go-package": "github.com/Reflektion/dp-data-events-api/service/content-validation"
+      },
+      "Page": {
+        "type": "object",
+        "properties": {
+          "locale_country": {
+            "description": "Two-letter country code in the ISO 3166 Alpha 2 format. For example, use `us` for the United States.",
+            "type": "string",
+            "x-go-name": "LocaleCountry",
+            "example": "us"
+          },
+          "locale_currency": {
+            "description": "Three-letter currency code of the location-specific website in the ISO 42178 format.",
+            "type": "string",
+            "x-go-name": "LocaleCurrency",
+            "example": "usd"
+          },
+          "locale_language": {
+            "description": "Two-letter language code in the ISO 639-1 format. For example, use `fr` for French.",
+            "type": "string",
+            "x-go-name": "LocaleLanguage",
+            "example": "en"
+          },
+          "referrer": {
+            "description": "URL of the referring page. A referring page is the page on which the visitor clicked something to come to the current page.",
+            "type": "string",
+            "x-go-name": "Referer",
+            "example": "www.test_referer.com"
+          },
+          "title": {
+            "description": "Title of the current page.",
+            "type": "string",
+            "x-go-name": "Title",
+            "example": "The modern SaaS CMS"
+          },
+          "uri": {
+            "description": "URL of the current page.",
+            "type": "string",
+            "x-go-name": "Uri",
+            "example": "https://www.sitecore.com/products/xm-cloud"
+          }
+        },
+        "x-go-package": "github.com/Reflektion/dp-data-events-api/cal"
+      },
+      "Product": {
+        "type": "object",
+        "properties": {
+          "price": {
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "Price",
+            "example": 99
+          },
+          "price_original": {
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "PriceOriginal",
+            "example": 110
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "Quantity",
+            "example": 10
+          },
+          "sku": {
+            "type": "string",
+            "x-go-name": "Sku",
+            "example": "1030"
+          }
+        },
+        "x-go-package": "github.com/Reflektion/dp-data-events-api/cal"
+      },
+      "ProductEventPayloadV1": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "name",
+            "type": "string",
+            "x-go-name": "Name",
+            "example": "cart"
+          },
+          "type": {
+            "description": "t0",
+            "type": "string",
+            "x-go-name": "T0",
+            "example": "1625144306397"
+          },
+          "uid": {
+            "description": "uid",
+            "type": "string",
+            "x-go-name": "Uid",
+            "example": "125757321-qg-2q-4d-1p-7vbcxmrmt9nq8f5g8ff4-1625144306397"
+          },
+          "value": {
+            "$ref": "#/components/schemas/Value"
+          }
+        },
+        "x-go-package": "github.com/Reflektion/dp-data-events-api/cal"
+      },
+      "ProductEventPayloadV2": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "name",
+            "type": "string",
+            "x-go-name": "Name",
+            "example": "cart"
+          },
+          "type": {
+            "description": "t0",
+            "type": "string",
+            "x-go-name": "T0",
+            "example": "1625144306397"
+          },
+          "uuid": {
+            "description": "uuid",
+            "type": "string",
+            "x-go-name": "Uuid",
+            "example": "125757321-qg-2q-4d-1p-7vbcxmrmt9nq8f5g8ff4-1625144306397"
+          },
+          "value": {
+            "$ref": "#/components/schemas/Value"
+          }
+        },
+        "x-go-package": "github.com/Reflektion/dp-data-events-api/cal"
+      },
+      "Request": {
+        "type": "object",
+        "properties": {
+          "advanced_query_text": {
+            "type": "string",
+            "x-go-name": "AdvancedQueryText"
+          },
+          "keyword": {
+            "type": "string",
+            "x-go-name": "Keyword"
+          },
+          "modified_keyword": {
+            "type": "string",
+            "x-go-name": "ModifiedKeyword"
+          },
+          "num_requested": {
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "NumRequested"
+          },
+          "num_results": {
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "NumResults"
+          },
+          "page_number": {
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "PageNumber"
+          },
+          "page_size": {
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "PageSize"
+          },
+          "redirect_url": {
+            "type": "string",
+            "x-go-name": "RedirectUrl"
+          },
+          "total_results": {
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "TotalResults"
+          }
+        },
+        "x-go-package": "github.com/Reflektion/dp-data-events-api/cal"
+      },
+      "Review": {
+        "type": "object",
+        "properties": {
+          "comment": {
+            "description": "Review text that the visitor entered for this content piece.",
+            "type": "string",
+            "x-go-name": "Comment",
+            "example": "This book was great!"
+          },
+          "id": {
+            "description": "Unique identifier for this rating or comment. \nYou'll need to create and pass this ID. Sitecore Search does not create it.",
+            "type": "string",
+            "x-go-name": "Id",
+            "example": "ReviewID123"
+          },
+          "rating": {
+            "description": "Numerical rating that the visitor gave this content item.",
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "Rating",
+            "example": 7
+          }
+        },
+        "x-go-package": "github.com/Reflektion/dp-data-events-api/cal"
+      },
+      "Transaction": {
+        "type": "object",
+        "properties": {
+          "coupon": {
+            "description": "Any coupon or discount applied to this transaction.  ",
+            "type": "string",
+            "x-go-name": "Coupon",
+            "example": "sampleCouponABC "
+          },
+          "order_id": {
+            "description": "Unique identifier for this transaction. \nYou'll need to create and pass this ID. Sitecore Search does not create it. ",
+            "type": "string",
+            "x-go-name": "OrderId",
+            "example": "someTransactionID123"
+          },
+          "order_subtotal": {
+            "description": "The cost of the order before taxes and shipping. ",
+            "type": "number",
+            "format": "float",
+            "x-go-name": "OrderSubtotal",
+            "example": 45
+          },
+          "order_total": {
+            "description": "The total cost of the order, including taxes and shipping but excluding the discount, if any. ",
+            "type": "number",
+            "format": "float",
+            "x-go-name": "OrderTotal",
+            "example": 45.5
+          }
+        },
+        "x-go-package": "github.com/Reflektion/dp-data-events-api/cal"
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "addn_attributes": {
+            "description": "A custom map of visitor attributes that you defined.",
+            "type": "string",
+            "x-go-name": "AddnAttributes"
+          },
+          "address": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "cuid": {
+            "description": "Permanent ID in your system that identifies the visitor. For example, this could be a primary key in a visitor  database.\nThe `cuid` is different from the` user_id` or `uuid`, which are anonymous tracking IDs.",
+            "type": "string",
+            "x-go-name": "Cuid",
+            "example": "test_cuid"
+          },
+          "eid": {
+            "description": "Opaque ID that represents the visitor's email ID as identified by your email service provider.",
+            "type": "string",
+            "x-go-name": "Eid",
+            "example": "test_eid"
+          },
+          "email": {
+            "description": "Email of the visitor.",
+            "type": "string",
+            "x-go-name": "Email",
+            "example": "test@gmail.com"
+          },
+          "fbid": {
+            "description": "Facebook ID of the visitor.",
+            "type": "string",
+            "x-go-name": "Fbid",
+            "example": "test_fbid"
+          },
+          "gender": {
+            "description": "Vistor's gender. Pass either `male`, `female`, or `other`.",
+            "type": "string",
+            "x-go-name": "Gender",
+            "example": "male"
+          },
+          "segments": {
+            "description": "Custom groups or segments that you assigned to the visitor. This is a free-form string.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-go-name": "Segments"
+          }
+        },
+        "x-go-package": "github.com/Reflektion/dp-data-events-api/cal"
+      },
+      "ValidationResult": {
+        "type": "object",
+        "properties": {
+          "issues": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Issue"
+            },
+            "x-go-name": "Issues"
+          },
+          "module": {
+            "type": "string",
+            "x-go-name": "Module"
+          },
+          "msg": {
+            "type": "string",
+            "x-go-name": "Msg"
+          },
+          "payload": {
+            "type": "string",
+            "x-go-name": "Payload"
+          },
+          "status": {
+            "type": "string",
+            "x-go-name": "Status"
+          },
+          "system": {
+            "type": "string",
+            "x-go-name": "System"
+          },
+          "ts": {
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "TimeStamp"
+          }
+        },
+        "x-go-package": "github.com/Reflektion/dp-data-events-api/service/content-validation"
+      },
+      "Value": {
+        "type": "object",
+        "properties": {
+          "products": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Product"
+            },
+            "x-go-name": "Products"
+          }
+        },
+        "x-go-package": "github.com/Reflektion/dp-data-events-api/cal"
+      }
+    }
+  }
+}

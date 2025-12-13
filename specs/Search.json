@@ -1,0 +1,2011 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "description": "Use the Search and Recommendation API for Sitecore Search to create search experiences for your users.\nThe API has one endpoint and many objects and keys that you can use to add facets, sorting, filtering, suggestions, and more.\nDepending on the objects you use, you can get a variety of responses that you can use to create search experiences.\nSee the following schema and descriptions to learn how to use the objects and keys available.\n\nSome settings can be configured in both, the Customer Engagement Console (CEC) by an administrator, and through this API.\nIf there is a conflict, the values you pass through the API request always override CEC settings.\nFor example, an administrator uses the CEC to configure a pin rule for item_A.\nHowever, in the API request, you use `rule.bury` to bury item_A.\nAt runtime, Search buries item_A as per the API request and ignores the conflicting CEC setting.\n\nTo call the API, use the GET or POST methods on the base URL. To view your base URL,\nlog in to the Customer Engagement Console (CEC) and go to Developer Resources > API Access.\nNote that the URL for this Sitecore Search API contains the word \"discover\". This is correct and is as designed.\n\nFor more information and sample use cases, see the [Sitecore Search developer documentation](https://doc.sitecore.com/search/en/developers/search-developer-guide/using-the-search-and-recommendation-api-to-create-search-experiences.html).",
+    "title": "Search and Recommendation API Reference",
+    "version": "1.0.0",
+    "x-logo": {
+      "altText": "Discover API Service",
+      "url": "https://content-search-api-doc.rfksrv.com/logo.png"
+    }
+  },
+  "paths": {
+    "/discover/v2/{domainid}": {
+      "post": {
+        "description": "Create a search request.",
+        "summary": "Search and Recommendation API",
+        "operationId": "BatchSearchRecRequestContainer",
+        "parameters": [
+          {
+            "example": "987654321",
+            "description": "Numeric domain identifier.",
+            "name": "domainid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 6,
+              "maxLength": 12,
+              "pattern": "\\d+"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchSearchRecRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "default": {
+            "$ref": "#/components/responses/BatchSearchRecResponseContainer"
+          }
+        }
+      }
+    }
+  },
+  "tags": [],
+  "servers": [
+    {
+      "url": "http://localhost:8210"
+    }
+  ],
+  "components": {
+    "responses": {
+      "BatchSearchRecResponseContainer": {
+        "description": "BatchSearchRecResponseContainer defines the structure for the response you get from the search and recommendation API.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/SearchRecResponse"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "BatchSearchRecRequest": {
+        "type": "object",
+        "required": [
+          "widget"
+        ],
+        "properties": {
+          "context": {
+            "$ref": "#/components/schemas/Context"
+          },
+          "widget": {
+            "$ref": "#/components/schemas/BatchSearchRequestWidgets"
+          }
+        }
+      },
+      "BatchSearchRequestWidget": {
+        "description": "BatchSearchRequestWidget represents top level search-rec request object",
+        "type": "object",
+        "required": [
+          "rfk_id",
+          "entity"
+        ],
+        "properties": {
+          "entity": {
+            "description": "Entity to use for this widget.",
+            "type": "string"
+          },
+          "questions": {
+            "$ref": "#/components/schemas/Questions"
+          },
+          "recommendations": {
+            "$ref": "#/components/schemas/Recommendations"
+          },
+          "rfk_flags": {
+            "description": "Features that are turned on or off for this request.\nYou can use these publicly available flags : `rules`, `personalization`, `ranking`, and `textualRelevanceWeights`.\nBy default, all flags are on.\n\nUse the prefix `+`(plus) to enable the feature and `-`(minus) to disable it. For example, to enable rules, use `[+rules]`.\n\nYou cannot use the following internal-only flags: `debug`, `explain`, `test`, `profile`, `analyze`, and `cache`.",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "+semsearch"
+            ]
+          },
+          "rfk_id": {
+            "description": "Unique ID for the widget you want to request. You configure this in the CEC when you create a widget. For example, pass `rfkid_7` or `rfkid_6`.",
+            "type": "string"
+          },
+          "search": {
+            "$ref": "#/components/schemas/Search"
+          },
+          "sources": {
+            "description": "ID of the source you want Sitecore Search to search for this request.\nTo view a source ID, go to Sources section in the CEC. To pass more than one source, use commas to separate source IDs.",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "sourceID1",
+              "sourceID2"
+            ]
+          }
+        }
+      },
+      "BatchSearchRequestWidgets": {
+        "description": "Widget or widgets to use in this request. A widget is a container for all the configuration you do to create a type of experience.\nYou must create widgets in Customer Engagement Console (CEC) before you use them in an API request.",
+        "type": "object",
+        "title": "BatchSearchRequestWidgets",
+        "properties": {
+          "items": {
+            "description": "Types of widgets you want along with the settings for each widget type.",
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/BatchSearchRequestWidget"
+            }
+          }
+        }
+      },
+      "BlacklistRule": {
+        "description": "BlacklistRule\nBlacklist rule for this request. Use a `blacklist` rule when you want a list of items to never show up.",
+        "type": "object",
+        "required": [
+          "filter"
+        ],
+        "properties": {
+          "filter": {
+            "$ref": "#/components/schemas/Filter"
+          }
+        }
+      },
+      "BoostRule": {
+        "description": "BoostRule represents the settings for an boost type rule",
+        "type": "object",
+        "required": [
+          "filter"
+        ],
+        "properties": {
+          "filter": {
+            "$ref": "#/components/schemas/Filter"
+          },
+          "slots": {
+            "description": "The slots you want boosted content items to appear in. A slot can have up to one content item.\n\nNote: You can boost an item without assigning it to a slot.\nTo do this, assign a `weight` greater than 1.0.",
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": [
+              1,
+              5
+            ]
+          },
+          "weight": {
+            "description": "Weight to apply for this boost rule. The default is `1.0`. We recommend that you do not set a value greater than `5.0`.\nto minimize the impact of a single component on the overall scoring system.\n\nIf you want to boost content items without using slots, we strongly suggest you add a weight greater than the default of `1.0`.",
+            "type": "number",
+            "format": "float",
+            "minimum": 0.1,
+            "example": 1
+          }
+        }
+      },
+      "BuryRule": {
+        "description": "Settings for a bury type rule.",
+        "type": "object",
+        "title": "BuryRule",
+        "required": [
+          "filter"
+        ],
+        "properties": {
+          "filter": {
+            "$ref": "#/components/schemas/Filter"
+          }
+        }
+      },
+      "Content": {
+        "description": "Attributes you want to request for each item. For example, you can request only the title and description attributes.",
+        "type": "object",
+        "title": "Content",
+        "properties": {
+          "fields": {
+            "description": "Attributes to return for each content item.",
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "name",
+              "price"
+            ]
+          }
+        }
+      },
+      "Context": {
+        "description": "Context of the request, including the unique ID of the visitor, visitor location and language, and relevant document IDs.\nAdd more context to get relevant search results.",
+        "type": "object",
+        "title": "Context",
+        "properties": {
+          "browser": {
+            "$ref": "#/components/schemas/ContextBrowser"
+          },
+          "campaign": {
+            "$ref": "#/components/schemas/ContextCampaign"
+          },
+          "geo": {
+            "$ref": "#/components/schemas/ContextGeo"
+          },
+          "ids": {
+            "description": "Document IDs per entity that apply to this request.",
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "locale": {
+            "$ref": "#/components/schemas/ContextLocale"
+          },
+          "page": {
+            "$ref": "#/components/schemas/ContextPage"
+          },
+          "store": {
+            "$ref": "#/components/schemas/ContextStore"
+          },
+          "user": {
+            "$ref": "#/components/schemas/ContextUser"
+          }
+        }
+      },
+      "ContextBrowser": {
+        "description": "Browser context for this request.",
+        "type": "object",
+        "title": "ContextBrowser",
+        "properties": {
+          "app_type": {
+            "description": "The type of app the visitor is on. This can be either browser, webview, or native. Sitecore automatically gets this value from the user_agent.",
+            "type": "string"
+          },
+          "device": {
+            "description": "Device of the visitor. This can be either pc, mobile, or tablet. Sitecore automatically gets this value from the user_agent.",
+            "type": "string"
+          },
+          "user_agent": {
+            "description": "The visitor's browser user agent. When you pass this value, you must follow industry conventions so that Sitecore can parse the device and app_type.",
+            "type": "string"
+          }
+        }
+      },
+      "ContextCampaign": {
+        "description": "Campaign context for this request.",
+        "type": "object",
+        "title": "ContextCampaign",
+        "properties": {
+          "utm_campaign": {
+            "description": "The paid campaign identifier",
+            "type": "string"
+          },
+          "utm_content": {
+            "description": "The paid campaign content",
+            "type": "string"
+          },
+          "utm_medium": {
+            "description": "The paid campaign medium",
+            "type": "string"
+          },
+          "utm_source": {
+            "description": "The paid campaign source",
+            "type": "string"
+          },
+          "utm_term": {
+            "description": "The paid campaign term",
+            "type": "string"
+          }
+        }
+      },
+      "ContextGeo": {
+        "description": "Geo context for this request.",
+        "type": "object",
+        "title": "ContextGeo",
+        "properties": {
+          "ip": {
+            "description": "IP address of the visitor's browser or native application. Do not pass the IP address of your proxy.\n\nIf you do not pass a value for `ip`, Search uses the following mechanism to obtain the visitor's IP address:\n\n• First, Search tries to get the IP address from the `X-Forwarded-For` request header.\n• Then, if your request does not have an `X-Forwarded-For` header, Search uses the request's IP address.",
+            "type": "string"
+          },
+          "location": {
+            "$ref": "#/components/schemas/ContextGeoLocation"
+          }
+        }
+      },
+      "ContextGeoLocation": {
+        "description": "ContextGeoLocation contains the Geographical location information for this request.\nSitecore Search uses this when you pass a `geoDistance` filter but do not pass a `lat` and `long` value along with the filter object.",
+        "type": "object",
+        "title": "ContextGeoLocation",
+        "required": [
+          "lat",
+          "lon"
+        ],
+        "properties": {
+          "lat": {
+            "description": "The latitude of the vistor. Sitecore Search uses this value when you send a `geoDistance` filter\nbut do not send a latitude value inside the filter object.\n\nUse the decimal degrees (DD) format. Don't use spaces. For example, pass `-77.0089`.",
+            "type": "number",
+            "format": "double"
+          },
+          "lon": {
+            "description": "The longitude of the visitor. Sitecore Search uses this value when you send a `geoDistance` filter\nbut do not send a longitude value inside the filter object.\n\nUse the decimal degrees (DD) format. Don't use spaces. For example, pass `-120.0017`.",
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "ContextLocale": {
+        "description": "Locale context for this request.",
+        "type": "object",
+        "title": "ContextLocale",
+        "required": [
+          "country",
+          "language"
+        ],
+        "properties": {
+          "country": {
+            "description": "Two-letter country code in the ISO 3166 Alpha 2 format. For example, use `us` for the United States.",
+            "type": "string",
+            "example": "us"
+          },
+          "language": {
+            "description": "Two-letter language code in the ISO 639-1 format. For example, use `fr` for French.",
+            "type": "string",
+            "example": "en"
+          }
+        }
+      },
+      "ContextPage": {
+        "description": "Page context for this request.",
+        "type": "object",
+        "title": "ContextPage",
+        "required": [
+          "uri",
+          "custom"
+        ],
+        "properties": {
+          "uri": {
+            "description": "URL applicable to the context of this request. For example, if the visitor came to this page from another page in your domain, pass the URL of the page they came from.",
+            "type": "string"
+          }
+        }
+      },
+      "ContextStore": {
+        "description": "The store context for this request.",
+        "type": "object",
+        "title": "ContextStore",
+        "required": [
+          "id",
+          "group_id"
+        ],
+        "properties": {
+          "group_id": {
+            "description": "The store group's unique identifier.",
+            "type": "string"
+          },
+          "id": {
+            "description": "The store's unqiue identifier.",
+            "type": "string"
+          }
+        }
+      },
+      "ContextUser": {
+        "description": "Visitor context for this request.",
+        "type": "object",
+        "title": "ContextUser",
+        "properties": {
+          "custom": {
+            "description": "Custom user context. Pass the name of the custom user context as the `key` and the actual value as the `value`. You can pass more than one key:value pair.",
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "example": "\"custom_id1\": \"1625vyh3735\", \"custom_id2\": \"db786\""
+          },
+          "groups": {
+            "description": "Groups or segments assigned to the user.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "user_id": {
+            "description": "Anonymous visitor ID that ties a visitor to a request. The user_id ID can be any anonymous and distinct string. You must generate and pass the user_id as Sitecore Search does not generate it.\nNote that this key is different from the [uuid](https://doc.sitecore.com/search/en/developers/search-developer-guide/using-a-uuid-to-track-site-visitors.html), which requires a specific structure.\nTo add user context, you can pass either the user_id or the uuid.",
+            "type": "string"
+          },
+          "uuid": {
+            "description": "Anonymous visitor ID that ties a visitor to a request and requires a [specific structure](https://doc.sitecore.com/search/en/developers/search-developer-guide/using-a-uuid-to-track-site-visitors.html). You must generate and pass the UUID as Sitecore Search does not generate it.\nNote that this key is different from the user_id, which does not require a specific structure.\nTo add user context, you can pass either the user_id or the uuid.",
+            "type": "string"
+          }
+        }
+      },
+      "Error": {
+        "description": "Error defines the structure for an error",
+        "type": "object",
+        "required": [
+          "message",
+          "code",
+          "type",
+          "severity",
+          "details"
+        ],
+        "properties": {
+          "code": {
+            "description": "Error code.",
+            "type": "integer",
+            "format": "int64"
+          },
+          "details": {
+            "description": "Internal error details.",
+            "type": "object",
+            "additionalProperties": {}
+          },
+          "message": {
+            "description": "Error message.",
+            "type": "string"
+          },
+          "severity": {
+            "description": "Error severity. This can be `low`, `medium`, or `high`.",
+            "type": "string"
+          },
+          "type": {
+            "description": "Error type.",
+            "type": "string"
+          }
+        }
+      },
+      "ExactAnswer": {
+        "description": "Settings you need to pass to get a single answer to a visitor query.",
+        "type": "object",
+        "title": "ExactAnswer",
+        "required": [
+          "query_types"
+        ],
+        "properties": {
+          "include_sources": {
+            "description": "Whether to also return specific attributes from the documents used to generate the answer.",
+            "type": "boolean",
+            "default": false
+          },
+          "query_types": {
+            "description": "Type of visitor query you want an exact answer for.\nYou can pass one or a combination of the following query types:\n\n• 'question' - get an exact answer if the visitor enters a question.\n\n• 'statement' - get an exact answer if the visitor enters a statement.\n\n• 'keyword' - get an exact answer if the visitor enters keywords.\n\n\nIn the following example, setting `query_types` to `[\"question\", \"statement\"]` will have the following effects:\n\n• If the visitor searches for \"How high is Mount Everest?\", they get an exact answer because they entered a question.\n\n• If the visitor searches for \"Mount Everest is very high\", they get an exact answer because they entered a statement.\n\n• If the visitor searches for \"Everest height meters\", they don't get an exact answer because they only entered keywords, not a question or a statement.",
+            "type": "array",
+            "default": [
+              "question",
+              "statement"
+            ],
+            "minLength": 1,
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "question",
+              "statement"
+            ]
+          }
+        }
+      },
+      "Facet": {
+        "description": "Facet settings for the request.",
+        "type": "object",
+        "title": "Facet",
+        "properties": {
+          "all": {
+            "description": "Whether you want all facet types configured for this widget in the CEC. If `true`, the response gets all facet types with their default configuration. Use the `facet.types` object to set filters and other options.",
+            "type": "boolean"
+          },
+          "coverage": {
+            "description": "Include coverage computation for each facet type in the response. Coverage is a number from 0 to 1, representing the approximate percentage of the total matching documents which fall into at least one facet value bucket. Use Coverage to filter out facets which may not be relevant to the query. Enabling this setting may negatively affect performance.",
+            "type": "boolean"
+          },
+          "max": {
+            "description": "The maximum number of facet values per facet type.\nIf you request too many facet values, you see a lag in response times. We recommend that you request fewer than 50 facet values.\nIf you do not pass this key, Sitecore returns a default of 10 facet values.",
+            "type": "integer",
+            "format": "int64",
+            "maximum": 100,
+            "minimum": 1,
+            "example": 10
+          },
+          "sort": {
+            "$ref": "#/components/schemas/FacetSort"
+          },
+          "types": {
+            "description": "Facet types you want, along with the settings for each facet type.",
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/FacetType"
+            }
+          }
+        }
+      },
+      "FacetFilter": {
+        "description": "Filter settings you want to apply to this facet type.",
+        "type": "object",
+        "title": "FacetFilter",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "description": "Whether you want to use an OR filter or an AND filter on this facet.\nUse `type` along with `filtering_options` and `values` to configure filtering within a facet type.\n\nThis parameter accepts the following values:\n\n• `or`\n\n• `and`\n\n\nFor example, you have a Genre facet with possible values of Mystery, Historical, and Fiction.\nYour data set of book titles has items that one or a or a combination of these genres.\nAssume that the visitor selects the Mystery and Historical facet values.\nIf you pass the `and` filter, you only get the small subset of book titles that that are both mystery and historical. You do not see items that are only mystery or only historical.\nIf you pass the `or` filter, you get items that are either of the mystery or historical genres.\nThis includes mystery titles, historical titles, and items that are a combination of genres, one of which is mystery or historical.",
+            "type": "string",
+            "enum": [
+              "and",
+              "or"
+            ],
+            "example": "or"
+          },
+          "values": {
+            "description": "The kind of filtering you want to do on this facet.\n\nThis array can be either of the following two data types:\n\n• Array of facet ID strings. You can only pass facet IDs here. You can't pass facet values.\nTo get facet IDs, send an unfiltered request for facets. The response will contain facet IDs.\nFor example, pass `values: facet_id123\",\"facet_id456\",\"facet_id789` and not `values: \"mystery\",\"fiction\",\"young adult`\n\n• Array of facet filter objects, with each object having a  `type` and `value` parameter.\n\n`values.type` is a string that accepts any of the following values:\n\n• `allOf` -  use all given values to find a match.\n\n• `and` - add nested filters, all of which must match to get a result. For example, if you nest a `gte` and `lt` filter within `and`,\nyou request results that are both greater than and less than a certain amount.\n\n• `anyOf` - use any of the given values to find a match.\n\n• `eq` - get a match only if the item is an exact match for the string you provide.\n\n• `geoDistance` - get a match only if the item is within a certain distance from a specific location.\n\n• `gt` - get a match only if the item is greater than the value you specify.\n\n• `gte` - get a match only if the item is greater than or equal to the value you specify.\n\n• `lt` - get a match only if the item is less than the value you specify.\n\n• `lte` - get a match only if the item is less than or equal to the value you specify.\n\n• `not` - get a match only if the item is not any of the values you specify.\n\n• `or` - add nested filters, any of which can match to get a result. For example, if you nest a `lt` and `gt`\nfilter within `and`, you request results that are  less than or greater than a certain amount.\n\n`values.value` is an object whose parameters depend on  what you pass as `values.type`.\nFor example, if you pass `values.value=eq`, the `values.type` object requires the  `name` and `value`  parameters.\nIf you pass  `values.value=geoDistance`, the `values.type` object requires the `distance`, `lat`, `lon`, and `name` parameters.\n\nTo learn more, see the see the [facet filtering reference and examples](https://doc.sitecore.com/search/en/developers/search-developer-guide/facet-filtering-reference.html).\n\n`values.value` only accepts  facet values. It does not accept facet IDs.\nFor example, pass `value:mystery`and not `value:\"facet_id123\"`.\n\nNote that you can't mix data types in an array. That is, you cannot have an array with both strings and objects.",
+            "example": "[\"facetid_ABC\",\"facetid_DEF\",\"facetid_GHI\"]"
+          }
+        }
+      },
+      "FacetSort": {
+        "description": "How you want to sort facet values.",
+        "type": "object",
+        "title": "FacetSort",
+        "required": [
+          "name",
+          "order"
+        ],
+        "properties": {
+          "name": {
+            "description": "Whether you want to sort facet values alphabetically or by the number of items that have this value. Use `text` or `count`.",
+            "type": "string",
+            "example": "text"
+          },
+          "order": {
+            "description": "Whether you want to sort facet values in an ascending or descending order. Use `asc` or `desc`.",
+            "type": "string",
+            "example": "asc"
+          }
+        }
+      },
+      "FacetType": {
+        "description": "FacetType represents the settings for an individual facet",
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "after": {
+            "description": "Specify an `offset` to you get results that start with the `offset` value. An offset is the position of item in the data set.\nYou can only use this key for a term facet with text sorting and `asc` or `desc` sorting applied.\nYou cannot use this key if you specify a `keyphrase`.",
+            "type": "string",
+            "example": "facetid_123"
+          },
+          "coverage": {
+            "description": "Include coverage computation for this facet type in the response. Coverage is a number from 0 to 1, representing the approximate percentage of the total matching documents which fall into at least one facet value bucket. Use Coverage to filter out facets which may not be relevant to the query. Enabling this setting may negatively affect performance.",
+            "type": "boolean"
+          },
+          "exclude": {
+            "description": "List of facet values to exclude from the final response for this facet type. Pass facet values here.",
+            "type": "array",
+            "minimum": 1,
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "val1",
+              "val2"
+            ]
+          },
+          "filter": {
+            "$ref": "#/components/schemas/FacetFilter"
+          },
+          "filtering_options": {
+            "description": "How other filtering affects this facet, and how filtering in this facet affects other facets.\nUse this key along with `filter` to configure filtering options for this facet type.\nYou can pass more than one filtering option.\n\nThis parameter accepts the following values:\n\n• `hard_filters`- Apply request-level filters that you configure using the search.filter object and apply hard filters that you configure in the CEC.\n\n• `other_facet_values` - Apply filters from other facets to the current facet. This means that when a user selects facet values in other facets,\nthe facet values in this facet change dynamically based on whether the filter still applies to them.\n\n• `own_values` - Apply filters to facet values within this facet. This means that when a user selects a value in this facet,\nthe other values in this facet change dynamically based on whether the filter still applies to them.",
+            "type": "array",
+            "minimum": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "enum": [
+                "hard_filters",
+                "other_facet_values",
+                "own_values"
+              ]
+            },
+            "example": [
+              "hard_filters",
+              "other_facet_values"
+            ]
+          },
+          "keyphrase": {
+            "description": "Use a `keyphrase` to filter facet values. This is useful when you have many facet values for a facet type and cannot display all of them at once.\n\nFor example, you can add a search box within the facet type and pass the text that user enters as the `keyphrase`.\nThe response contains facets that are an exact match to the keyphrase or whose prefixes match the keyphrase.\n\nYou can only use this key with term facets or dynamic attributes based on term facets. You cannot use this key if you use the `after` key.",
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
+            "example": "Sitecore"
+          },
+          "max": {
+            "description": "The maximum number of facet values for this facet type. This key overrides the `facet.max` value for this facet type and the CEC settings.\n\nIf you request a high number of facet values, it will affect the latency of your request. We recommend that you do not specify a `max` of more than 50.\nThe default value is 10.",
+            "type": "integer",
+            "format": "int64",
+            "maximum": 100,
+            "minimum": 1,
+            "example": 10
+          },
+          "min_count": {
+            "description": "Minimum count of any facet value in the response.",
+            "type": "integer",
+            "format": "int64",
+            "maximum": 100,
+            "minimum": 1,
+            "example": 1
+          },
+          "name": {
+            "description": "Facet name that appears on the CEC.",
+            "type": "string",
+            "example": "brands"
+          },
+          "sort": {
+            "$ref": "#/components/schemas/FacetSort"
+          }
+        }
+      },
+      "Filter": {
+        "description": "Add filters to limit what's returned in the response. ",
+        "type": "object",
+        "title": "Filter",
+        "properties": {
+          "type": {
+            "description": "The type of filter. You can use any of the following filtering options:\n\n• `allOf` -  use all given values to find a match.\n\n• `and` - add nested filters, all of which must match to get a result. For example, if you nest a `gte` and `lt` filter within `and`, you request results that are\nboth greater than and less than a certain amount.\n\n• `anyOf` - use any of the given values to find a match.\n\n• `eq` - get a match only if the item is an exact match for the string you provide.\n\n• `exists` - get a match only if the given attribute is present in the item.\n\n• `geoDistance` - get a match only if the item is within a circular area you define.\n\n• `geoWithin` - get a match only if the item is within a polygonal area you define.\n\n• `gt` - get a match only if the item is greater than the value you specify.\n\n• `gte` - get a match only if the item is greater than or equal to the value you specify.\n\n• `lt` - get a match only if the item is less than the value you specify.\n\n• `lte` - get a match only if the item is less than or equal to the value you specify.\n\n• `not` - get a match only if the item is not any of the values you specify.\n\n• `or` - add nested filters, any of which can match to get a result. For example, if you nest a `lt` and `gt` filter within `and`, you request results that are\neither less than or greater than a certain amount.",
+            "type": "string",
+            "x-go-name": "GetFilterType"
+          }
+        },
+        "discriminator": {
+          "propertyName": "type"
+        }
+      },
+      "Highlight": {
+        "description": "Highlight settings to apply to the request.",
+        "type": "object",
+        "title": "Highlight",
+        "required": [
+          "fields"
+        ],
+        "properties": {
+          "fields": {
+            "description": "List of fields that you want to use for highlighting. Ensure that the fields you pass are marked as use for textual relevance in the CEC.",
+            "type": "array",
+            "minimum": 1,
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "name",
+              "price"
+            ]
+          },
+          "fragment_size": {
+            "description": "Character size for each returned highlighted fragment. The default is `50`.",
+            "type": "integer",
+            "format": "int64",
+            "maximum": 1000,
+            "minimum": 1,
+            "example": 50
+          },
+          "post_tag": {
+            "description": "Closing tag to surround highlighted text with. Use this along with `pre_tag`. The default is `\\</em\\>`.",
+            "type": "string",
+            "example": "</em>"
+          },
+          "pre_tag": {
+            "description": "Opening tag to surround highlighted text with. Use this along with `post_tag`. The default is `<em\\>`.",
+            "type": "string",
+            "example": "<em>"
+          }
+        }
+      },
+      "IncludeRule": {
+        "description": "IncludeRule represents the settings for an include type rule",
+        "type": "object",
+        "required": [
+          "slots",
+          "filter"
+        ],
+        "properties": {
+          "filter": {
+            "$ref": "#/components/schemas/Filter"
+          },
+          "slots": {
+            "description": "The slots you want included content items to appear in. Each slot can contain up to one content item.",
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": [
+              1,
+              5
+            ]
+          }
+        }
+      },
+      "Personalization": {
+        "description": "Settings you can use to customize results to a visitor. These settings override the widget personalization settings",
+        "type": "object",
+        "title": "Personalization",
+        "properties": {
+          "algorithm": {
+            "description": "Algorithm to use to get personalized results for the user. You can use either the 'mlt' or 'affinity' algorithm. The algorithms are similar but use different techniques to personalize results.\n\n• `mlt` - this algorithm uses specific documents from the user's past interactions and shows similar items in the results.\nFor example, if a visitor has interacted with blogs about cloud services, this algorithm will show items that are like blogs about cloud services.\n\n• `affinity` - this algorithm does not use specific documents. Instead, it considers the user's browsing history and looks at metrics for different attributes.\nFor example, this algorithm might learn that a specific visitor likes the color red based on their past searches and clicks. The algorithm then boosts results that have the attribute red.",
+            "type": "string",
+            "enum": [
+              "mlt",
+              "affinity"
+            ]
+          },
+          "fields": {
+            "description": "List of fields to use for determining similar content. You or an administrator must mark these fields as 'use for personalization' in the CEC before you can pass them in the request.\nIf you do not pass any fields, Sitecore uses all fields marked as use for personalization in the CEC.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "brand",
+              "color"
+            ]
+          },
+          "ids": {
+            "description": "List of IDs for which to look similar content. For example, the ID of a blog post the visitor has recently clicked. If you do not pass any ID, Sitecore uses past event data for the user. The `ids` parameter only applies to the `mlt` algorithm.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "id1",
+              "id2"
+            ]
+          }
+        }
+      },
+      "PinRule": {
+        "description": "PinRule represents the settings for a pin type rule",
+        "type": "object",
+        "required": [
+          "slot",
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "description": "the id of the content item to pin",
+            "type": "string",
+            "example": "id1"
+          },
+          "slot": {
+            "description": "Slot you want the pinned content item to appear in. A slot can have up to one content item.",
+            "type": "integer",
+            "format": "int64",
+            "example": 1
+          }
+        }
+      },
+      "Query": {
+        "description": "Settings to do with the visitor query.",
+        "type": "object",
+        "title": "Query",
+        "required": [
+          "keyphrase"
+        ],
+        "properties": {
+          "highlight": {
+            "$ref": "#/components/schemas/Highlight"
+          },
+          "keyphrase": {
+            "description": "Key phrase that the visitor enters to search for relevant content.",
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
+            "example": "Sitecore"
+          },
+          "operator": {
+            "description": "Operator to use for multi-word keyphrases. You can pass `and` or `or.`",
+            "type": "string",
+            "example": "or"
+          },
+          "relevance": {
+            "description": "Textual relevance settings to apply for the request.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TextualRelevanceVariable"
+            }
+          }
+        }
+      },
+      "Questions": {
+        "description": "Settings required to get AI-powered questions and answers. You must pass a questions widget if you use this object.",
+        "type": "object",
+        "title": "Questions",
+        "required": [
+          "keyphrase"
+        ],
+        "properties": {
+          "exact_answer": {
+            "$ref": "#/components/schemas/ExactAnswer"
+          },
+          "keyphrase": {
+            "description": "Keyphrase that the visitor enters to search for relevant content.",
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
+            "example": "Sitecore"
+          },
+          "related_questions": {
+            "$ref": "#/components/schemas/RelatedQuestionsV2"
+          }
+        }
+      },
+      "RankingVariable": {
+        "description": "RankingVariable\nRanking settings to apply for the request. If present, this will override widget ranking settings in the CEC.",
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "description": "Name of the attribute to use for ranking.\nThe attribute must be marked as use for search ranking in the CEC under Administration, Domain Settings, attribute, Use For Features.",
+            "type": "string",
+            "example": "sales"
+          },
+          "weight": {
+            "description": "Weight to apply to this ranking attribute. The default is `1.0`.\nWhile you can enter any value between 1 and 100, we recommend that you pass a\nlow value to minimize the impact of a single component on the overall scoring system.\n\nNote: If you rank by a timestamp attribute like `last_modified`, for example,\nthe `weight` for potential matches changes with time as follows:\n\n• Potential matches whose timestamp attribute exactly matches the request's time stamp get the full weight.\n\n• Potential matches whose timestamp attribute is within one week of the request's time stamp get the half the weight.\n\n• Potential matches whose timestamp attribute more than one week behind the request's time stamp get a weight of zero.\n\nFor example, you send a request on Friday, May 26 at 1:30pm with a ranking `weight` of `3`. A content item whose\n`last_modified` attribute has a value of May 23rd will get a ranking weight of `1.5`. However, a content item whose\n`last_modified` attribute has value May 15th will get a ranking weight of `0`.",
+            "type": "number",
+            "format": "float",
+            "minimum": 0.1,
+            "example": 1
+          }
+        }
+      },
+      "Recipe": {
+        "description": "Recipe used to get recommendations. If you don't pass a recipe, Search uses the one specified in the CEC to get recommendations.",
+        "type": "object",
+        "title": "Recipe",
+        "properties": {
+          "id": {
+            "description": "The ID of the recipe you want to use to override the default CEC recipe setting. To locate this value, in the CEC, click Global Resources > Recipes and click the desired recipe.",
+            "type": "string",
+            "example": "548980"
+          },
+          "version": {
+            "description": "The version of the recipe you want to use to override the default CEC recipe setting. To locate this value, in the CEC, click Global Resources > Recipes and click the desired recipe.",
+            "type": "integer",
+            "format": "int64",
+            "example": 1
+          }
+        }
+      },
+      "Recommendations": {
+        "description": "Use this object to get recommendations to show visitors. In addition to this object, make sure you pass the ID of a recommendation widget in `rfk_id`.",
+        "type": "object",
+        "title": "Recommendations",
+        "properties": {
+          "content": {
+            "$ref": "#/components/schemas/Content"
+          },
+          "filter": {
+            "$ref": "#/components/schemas/Filter"
+          },
+          "limit": {
+            "description": "Maximum number of recommendations to return.",
+            "type": "integer",
+            "format": "int64",
+            "maximum": 100,
+            "minimum": 1
+          },
+          "offset": {
+            "description": "Number of items to skip. For example, if you pass an `offset` of 10, the search result shows the 11th item onwards.",
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "example": 0
+          },
+          "paginate_recommendations": {
+            "description": "Enables the Offset attribute",
+            "type": "boolean"
+          },
+          "recipe": {
+            "$ref": "#/components/schemas/Recipe"
+          },
+          "rule": {
+            "$ref": "#/components/schemas/Rule"
+          },
+          "swatch": {
+            "$ref": "#/components/schemas/Swatch"
+          }
+        }
+      },
+      "RelatedQuestionsV2": {
+        "description": "Settings you can pass to get AI-generated question-and-answer pairs relevant to a visitor's query.\n\nWhen you use the questions object, you can pass `exact_answer`, `related_questions`, or both.\n\n• `exact_answer` - get a single answer to a visitor query.\n\n• `related_questions` - get question-and-answer pairs relevant to a visitor's query.",
+        "type": "object",
+        "title": "RelatedQuestionsV2",
+        "properties": {
+          "include_sources": {
+            "description": "Include configured additional attributes from documents used to generate this answer.",
+            "type": "boolean",
+            "default": false
+          },
+          "limit": {
+            "description": "Maximum number of question-answer pairs to return.",
+            "type": "integer",
+            "format": "int64",
+            "maximum": 100,
+            "minimum": 1,
+            "example": 10
+          },
+          "offset": {
+            "description": "Number of items to skip. For example, if you pass an `offset` of 10, the search result shows the 11th item onwards.",
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "example": 0
+          }
+        }
+      },
+      "RequestResponseContext": {
+        "description": "Pass this to get details about the all the context - both explicit and inferred - that Search considered to return this search result.\nPass an empty `response_object`. There are no keys or values.\n\nFor details, see the `ResponseContext` object in the response.",
+        "type": "object",
+        "title": "RequestResponseContext"
+      },
+      "ResponseAppearance": {
+        "description": "ResponseAppearance defines the appearance of a widget",
+        "type": "object",
+        "properties": {
+          "css_names": {
+            "description": "List of CSS names for the widget",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "html_names": {
+            "description": "List of HTML names for the widget",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "templates": {
+            "description": "description pending from doc",
+            "type": "object",
+            "additionalProperties": {}
+          },
+          "variables": {
+            "description": "description pending from doc",
+            "type": "object",
+            "additionalProperties": {}
+          }
+        }
+      },
+      "ResponseBehavior": {
+        "type": "object",
+        "title": "ResponseBehavior defines the structure for a rule behavioir.",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "version": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "ResponseContentItem": {
+        "description": "ResponseContentItem will include all key value pairs for an individual content item returned in the response",
+        "type": "object",
+        "additionalProperties": {}
+      },
+      "ResponseContext": {
+        "description": "•Explicit context is context you passed in the request.\nFor example, If you pass `context.geo.ip`, you explicity tell Search to use the given visitor's IP address.\n\n•Inferred context is context Search inferred from your request.\nFor example, you set `suggestion.keyphrase_fallback:true` and a fallback occurs.\nAs a result, Search uses the first suggestion as the search term.\nIn the response, you'll see both, the `original_keyphrase` the visitor entered\nand the `keyphrase` Search used to get results.\nHere, `keyphrase` is an inferred context because you did not pass it in the request.\nInstead, Search got it from a suggestion.\n\nTo see this object in the response, pass an empty `response_context` object in the request.",
+        "type": "object",
+        "title": "ResponseContext is an object that contains information about the context Search used to generate this search result.\nIt contains details of both explicit and inferred context.",
+        "properties": {
+          "keyphrase": {
+            "type": "string"
+          },
+          "original_keyphrase": {
+            "type": "string"
+          },
+          "redirect_url": {
+            "type": "string"
+          }
+        }
+      },
+      "ResponseFacetType": {
+        "type": "object",
+        "title": "ResponseFacetType defines the structure of an individual facet response.",
+        "required": [
+          "name",
+          "label"
+        ],
+        "properties": {
+          "coverage": {
+            "description": "Facet Coverage is a number from 0 to 1, representing the approximate percentage of the total matching documents which fall into at least one facet value bucket. Use Coverage to filter out facets which may not be relevant to the query. Enabling this setting may negatively affect performance.",
+            "type": "number",
+            "format": "double"
+          },
+          "label": {
+            "description": "Facet label.",
+            "type": "string"
+          },
+          "name": {
+            "description": "Facet name that you can use on the UI of your website.",
+            "type": "string"
+          },
+          "value": {
+            "description": "Values and their counts for this facet type.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResponseFacetTypeValue"
+            }
+          }
+        }
+      },
+      "ResponseFacetTypeValue": {
+        "description": "ResponseFacetTypeValue defines the structure each facet value response",
+        "type": "object",
+        "required": [
+          "id",
+          "text",
+          "count"
+        ],
+        "properties": {
+          "count": {
+            "description": "Number of items in the facet.",
+            "type": "integer",
+            "format": "int64"
+          },
+          "id": {
+            "description": "Unique ID that corresponds to the facet value. You can use this ID to filter future requests.",
+            "type": "string"
+          },
+          "max": {
+            "description": "Maximum value in this range (<). You see a `max` value only for histogram facets."
+          },
+          "min": {
+            "description": "Minimum value in this range (>=). You see a `min` value only for histogram facets."
+          },
+          "text": {
+            "description": "the facet value",
+            "type": "string"
+          }
+        }
+      },
+      "ResponseRelatedQuestion": {
+        "description": "Array of objects that defines the structure for a question and answer pair. You see this only if you pass a `related-questions` object in the request.",
+        "type": "object",
+        "title": "ResponseRelatedQuestion ",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "answer": {
+            "description": "Answer part of the question and answer pair.",
+            "type": "string"
+          },
+          "highlight": {
+            "description": "Highlighted context snippet. You see this only if you pass a `highlight` object in the request.",
+            "type": "string"
+          },
+          "id": {
+            "description": "Unique ID that corresponds to question and answer pair. You can use this ID to filter future requests.",
+            "type": "string"
+          },
+          "question": {
+            "description": "Question part of the question and answer pair.",
+            "type": "string"
+          },
+          "sources": {
+            "description": "Sources of the question and answer pair. You see this only if you pass `include_sources=true` in the request.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": {}
+            }
+          },
+          "type": {
+            "description": "The type of this question and answer pair. One of question, statement or keyword.",
+            "type": "string"
+          }
+        }
+      },
+      "ResponseRule": {
+        "description": "Object that contains the rules applied in the response.",
+        "type": "object",
+        "title": "ResponseRule ",
+        "properties": {
+          "behaviors": {
+            "description": "The list of behaviors applied for this request.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResponseBehavior"
+            }
+          }
+        }
+      },
+      "ResponseSort": {
+        "type": "object",
+        "title": "ResponseSort is an object that contains the sorting information you requested. You see this only if you pass a `sort` object in the request.",
+        "properties": {
+          "choices": {
+            "description": "If the input key phrase is a question that Sitecore can crawl the source and answer, the answer data appears here.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResponseSortChoice"
+            }
+          }
+        }
+      },
+      "ResponseSortChoice": {
+        "description": "ResponseSortChoice defines the structure for a sorting choice",
+        "type": "object",
+        "properties": {
+          "label": {
+            "description": "Sorting choice label. This is an internal label. Example, `brand_colour`.",
+            "type": "string"
+          },
+          "name": {
+            "description": "Sorting choice name. This is the sort name that appears on the UI. For example, 'Color'.",
+            "type": "string"
+          },
+          "order": {
+            "description": "Sorting choice order, if available. For example, `asc`.",
+            "type": "string"
+          }
+        }
+      },
+      "ResponseSuggestionAdditionalField": {
+        "description": "An additional data point on a suggestion value beyond the suggestion text, drawn from the content documents that produced the suggestion text.",
+        "type": "object",
+        "title": "ResponseSuggestionAdditionalField ",
+        "required": [
+          "field",
+          "Values"
+        ],
+        "properties": {
+          "Values": {
+            "description": "The most frequently appearing values of the additional field. Currently limited to length 1, the single most frequent value. Is an array for future-proofing.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResponseSuggestionAdditionalFieldValue"
+            }
+          },
+          "field": {
+            "description": "The name of the additional field",
+            "type": "string"
+          }
+        }
+      },
+      "ResponseSuggestionAdditionalFieldValue": {
+        "description": "ResponseSuggestionAdditionalFieldValue holds the value of a response suggestion additional field",
+        "type": "object",
+        "required": [
+          "value",
+          "freq"
+        ],
+        "properties": {
+          "freq": {
+            "description": "The number of times this value appears on the content documents that produced the suggestion text",
+            "type": "integer",
+            "format": "int64"
+          },
+          "value": {
+            "description": "The value of the additional field",
+            "type": "string"
+          }
+        }
+      },
+      "ResponseSuggestionValue": {
+        "description": "ResponseSuggestionValue defines the structure each suggestion value response",
+        "type": "object",
+        "required": [
+          "text",
+          "freq"
+        ],
+        "properties": {
+          "additional_fields": {
+            "description": "Additional configured data points drawn from the content documents that produced the suggestion text. Only on ContextAware and SortByAttribute suggestions.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResponseSuggestionAdditionalField"
+            }
+          },
+          "freq": {
+            "description": "How often this suggestion occurs in the index.",
+            "type": "integer",
+            "format": "int64"
+          },
+          "text": {
+            "description": "Suggestion text.",
+            "type": "string"
+          }
+        }
+      },
+      "Rule": {
+        "description": "Blacklist, bury, boost, include, or pin rules that you want to apply to this request.\nYou can add more than one rule to a request.",
+        "type": "object",
+        "title": "Rule",
+        "properties": {
+          "behaviors": {
+            "description": "Set this key to `true` if you want the response to contain a list of behaviors that apply to this request. These behaviors are usually other rules that were set in the CEC.\n\nYou can see these behaviors in two places in the CEC. The first place is in Widgets, Widget Variations, Rules and\nthe second place is in Global Merchandising Resources, Global Widget, Global Widget Variations, Rules.",
+            "type": "boolean"
+          },
+          "blacklist": {
+            "$ref": "#/components/schemas/BlacklistRule"
+          },
+          "boost": {
+            "description": "Boost rules for this request. Use a `boost` rule to move an item or category in the natural results set for this request from a lower rank to a higher rank.",
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/BoostRule"
+            }
+          },
+          "bury": {
+            "$ref": "#/components/schemas/BuryRule"
+          },
+          "include": {
+            "description": "Include rules for this request. Use an `include` rule to force a list of items or categories to appear in specific slots, even if they are not in the natural results set for this request.\nIf you want a single item or category to appear in a fixed slot, use a `pin` rule.",
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/IncludeRule"
+            }
+          },
+          "pin": {
+            "description": "Pin rules for this request. Use a `pin` rule to force an item to appear in a specific slot even if they are not in the natural results set for this request.\nIf you want a list of items or categories to appear in fixed slots, use an `include` rule.",
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/PinRule"
+            }
+          }
+        }
+      },
+      "Search": {
+        "description": "Search settings to apply to the request.",
+        "type": "object",
+        "title": "Search",
+        "properties": {
+          "content": {
+            "$ref": "#/components/schemas/Content"
+          },
+          "disable_grouping": {
+            "description": "Determine whether to disable the grouping of results by the grouping attribute, if grouping has been enabled in Sitecore Search.\n\nFor example, for a clearance sale page, return each color variation of a product separately, ungrouped. For a product listing page, group all variations and return a single product.",
+            "type": "boolean",
+            "default": false
+          },
+          "facet": {
+            "$ref": "#/components/schemas/Facet"
+          },
+          "filter": {
+            "$ref": "#/components/schemas/Filter"
+          },
+          "limit": {
+            "description": "Maximum number of items to return.",
+            "type": "integer",
+            "format": "int64",
+            "maximum": 100,
+            "minimum": 1,
+            "example": 10
+          },
+          "offset": {
+            "description": "Number of items to skip. For example, if you pass an `offset` of 10, the search result shows the 11th item onwards.",
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "example": 0
+          },
+          "personalization": {
+            "$ref": "#/components/schemas/Personalization"
+          },
+          "query": {
+            "$ref": "#/components/schemas/Query"
+          },
+          "ranking": {
+            "description": "How you want to handle ranking in this request. These values override the CEC widget ranking settings.",
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/RankingVariable"
+            }
+          },
+          "response_context": {
+            "$ref": "#/components/schemas/RequestResponseContext"
+          },
+          "rule": {
+            "$ref": "#/components/schemas/Rule"
+          },
+          "sort": {
+            "$ref": "#/components/schemas/Sort"
+          },
+          "suggestion": {
+            "description": "Suggestions you can use to autocomplete user queries, display predictive search results, and show suggestions.",
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/Suggestion"
+            }
+          },
+          "swatch": {
+            "$ref": "#/components/schemas/Swatch"
+          }
+        }
+      },
+      "SearchRecResponse": {
+        "description": "SearchRecResponse defines the structure for a search-rec API response",
+        "type": "object",
+        "properties": {
+          "dt": {
+            "description": "Response processing time in milliseconds.",
+            "type": "integer",
+            "format": "int64"
+          },
+          "errors": {
+            "description": "errors is an array of objects. Each object contains a single type of error along with a message, description, and severity level.\nYou see this object only if Sitecore encounters an error when it processes the request.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Error"
+            }
+          },
+          "ts": {
+            "description": "Time at which the Sitecore server served the response, in milliseconds.",
+            "type": "integer",
+            "format": "int64"
+          },
+          "widgets": {
+            "description": "Response for each requested widget. You may see some or all of these parameters depending on the request you send.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WidgetResponse"
+            }
+          }
+        }
+      },
+      "Sort": {
+        "description": "Sorting options for the search request.",
+        "type": "object",
+        "title": "Sort",
+        "properties": {
+          "choices": {
+            "description": "Set this key to `true` if you want the response to contain a list of available sort choices for this request.\nYou can use this list to allow users to select the type of sort they want to use.",
+            "type": "boolean",
+            "example": true
+          },
+          "value": {
+            "description": "Sorting options to apply to this request.",
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/SortOption"
+            }
+          }
+        }
+      },
+      "SortOption": {
+        "description": "SortOption represents a single sorting option, composed of a name and order",
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "description": "Sort type to use. You can only pass sort types that are defined in the CEC. Examples of sort types include sort by recommended, newest, name, and reviews.",
+            "type": "string",
+            "example": "color"
+          },
+          "order": {
+            "description": "Sort order you want to use.\nUse `asc` if you want to sort results in ascending order.\nUse  `desc` if you want to sort results in descending order.",
+            "type": "string",
+            "example": "desc"
+          }
+        }
+      },
+      "Suggestion": {
+        "description": "Suggestion represents a request for a single suggestion type",
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "exclude": {
+            "description": "List of suggestion values to exclude from the final response for this suggestion type.",
+            "type": "array",
+            "minimum": 1,
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "val1",
+              "val2"
+            ]
+          },
+          "keyphrase_fallback": {
+            "description": "Whether you want Search to use the first suggestion returned by this suggestion block\nas an alternate search key phrase if the original visitor key phrase gives zero results.\nThis is useful when a visitor enters a keyphrase and clicks the search button rather than a suggestion.\nInstead of showing the vistor an empty search page, you can show search results for the alternate keyphrase.\n\nIf you pass more than one `suggestion` object with `keyphrase_fallback` enabled,\nSearch uses the first suggestion of the suggestion block.\n\nTo see the alternative key phrase, if any,\npass an empty `response_context` object in the request and then see the `response_context` object in the response.",
+            "type": "boolean"
+          },
+          "max": {
+            "description": "Maximum number of suggestions you want to get.",
+            "type": "integer",
+            "format": "int64",
+            "maximum": 100,
+            "minimum": 1,
+            "example": 2
+          },
+          "name": {
+            "description": "Name of the suggestion block you want to use. You can only pass suggestion blocks types that are defined in the CEC.",
+            "type": "string",
+            "example": "my_suggester"
+          }
+        }
+      },
+      "Swatch": {
+        "description": "Settings you configure to get swatches. A swatch is a small sample or preview of an item.\n\nFor example, you have one product in three colors. You can show one color and request three swatches to show when the user hovers over the item.",
+        "type": "object",
+        "title": "Swatch",
+        "properties": {
+          "fields": {
+            "description": "Attributes to return for each swatch. This value overrides the CEC swatch settings.",
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "name",
+              "price"
+            ]
+          },
+          "group_by": {
+            "description": "Attribute to group swatches by.",
+            "type": "string",
+            "example": "group_id"
+          },
+          "max": {
+            "description": "Maximum number of swatches you want per item. The default is `5`.",
+            "type": "integer",
+            "format": "int64",
+            "maximum": 10,
+            "minimum": 1,
+            "example": 10
+          }
+        }
+      },
+      "TextualRelevanceVariable": {
+        "description": "TextualRelevanceVariable\nTextual relevance settings for the request. This setting overrides the widget ranking settings.",
+        "type": "object",
+        "required": [
+          "name",
+          "analyzer"
+        ],
+        "properties": {
+          "analyzer": {
+            "description": "Name of the analyzer to use for textual relevance. The analyzer must be set up in Search. To see a list of analyzers available in Search, [click here](https://doc.sitecore.com/search/en/users/search-user-guide/types-of-analyzers.html).",
+            "type": "string",
+            "example": "rfk_standard"
+          },
+          "name": {
+            "description": "Name of the attribute to use for textual relevance.\nThe attribute must be marked as use for textual relevance in the CEC under Administration, Domain Settings, attribute, Use For Features.",
+            "type": "string",
+            "example": "color"
+          },
+          "weight": {
+            "description": "Weight to apply for this textual relevance attribute. The default is 1.0. We recommend that you do not set a value greater than `5.0`.\nto minimize the impact of a single component on the overall scoring system.",
+            "type": "number",
+            "format": "float",
+            "minimum": 0.1,
+            "example": 1
+          }
+        }
+      },
+      "WidgetResponse": {
+        "type": "object",
+        "properties": {
+          "answer": {
+            "$ref": "#/components/schemas/ResponseRelatedQuestion"
+          },
+          "content": {
+            "description": "List of content items. You only see this if you pass a `content` object in the request.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResponseContentItem"
+            }
+          },
+          "duplicate_item": {
+            "description": "Total number of items that were removed via deduplication. You only see this if you pass a `content` object in the request.",
+            "type": "integer",
+            "format": "int64"
+          },
+          "entity": {
+            "description": "the entity type of this widget response",
+            "type": "string"
+          },
+          "errors": {
+            "description": "errors is an array of objects. Each object contains a single type of error along with a message, description, and severity level.\nYou see this object only if Sitecore encounters an error when it processes the request.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Error"
+            }
+          },
+          "facet": {
+            "description": "List of facets. You see this only if you pass a `facet` object in the request.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResponseFacetType"
+            }
+          },
+          "grouped_by": {
+            "description": "the name of the field used to group content documents. Set by the domain config or the request body.",
+            "type": "string"
+          },
+          "limit": {
+            "description": "Maximum number of content items you requested. You see this only if you pass a `content` object in the request.",
+            "type": "integer",
+            "format": "int64"
+          },
+          "offset": {
+            "description": "Offset applied to the request. You see this only if you pass an `offset` object in the request.",
+            "type": "integer",
+            "format": "int64"
+          },
+          "related_questions": {
+            "description": "ResponseRelatedQuestion contains a list of content items for the `related_questions` object. You see this only if you pass a `content` object in the request.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResponseRelatedQuestion"
+            }
+          },
+          "response_context": {
+            "$ref": "#/components/schemas/ResponseContext"
+          },
+          "rfk_debug": {
+            "description": "Debug information for this request.",
+            "type": "object",
+            "additionalProperties": {}
+          },
+          "rfk_id": {
+            "description": "`rfk_id` of the widget in the response.",
+            "type": "string"
+          },
+          "rule": {
+            "$ref": "#/components/schemas/ResponseRule"
+          },
+          "sort": {
+            "$ref": "#/components/schemas/ResponseSort"
+          },
+          "suggestion": {
+            "description": "List of suggestions for the key phrase. You see this only if you pass a `suggestions` object in the request.",
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/ResponseSuggestionValue"
+              }
+            }
+          },
+          "total_item": {
+            "description": "Total number of content items that match the request. You only see this if you pass a `content` object in the request.",
+            "type": "integer",
+            "format": "int64"
+          },
+          "type": {
+            "description": "`type` of the widget in the response.",
+            "type": "string"
+          },
+          "used_in": {
+            "description": "`usedIn` of the widget in the response.",
+            "type": "string"
+          }
+        }
+      },
+      "allOf": {
+        "description": "AllOfFilter represents a filter that checks if all the values are included in a given attribute",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Filter"
+          },
+          {
+            "type": "object",
+            "required": [
+              "name",
+              "values"
+            ],
+            "properties": {
+              "name": {
+                "description": "Name of the attribute to use for the filter.",
+                "type": "string",
+                "example": "color"
+              },
+              "values": {
+                "description": "Filter values.",
+                "type": "array",
+                "minItems": 1,
+                "items": {},
+                "example": [
+                  "pink",
+                  "violet"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "and": {
+        "description": "AndFilter is a composite filter that joins results with an AND operator",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Filter"
+          },
+          {
+            "type": "object",
+            "required": [
+              "filters"
+            ],
+            "properties": {
+              "filters": {
+                "description": "the and clauses",
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "$ref": "#/components/schemas/Filter"
+                }
+              }
+            }
+          }
+        ],
+        "x-class": "Filter"
+      },
+      "anyOf": {
+        "description": "AnyOfFilter represents a filter that checks if any of the values are included in a given attribute",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Filter"
+          },
+          {
+            "type": "object",
+            "required": [
+              "name",
+              "values"
+            ],
+            "properties": {
+              "name": {
+                "description": "Name of the attribute to use for the filter.",
+                "type": "string",
+                "example": "color"
+              },
+              "values": {
+                "description": "Filter values.",
+                "type": "array",
+                "minItems": 1,
+                "items": {},
+                "example": [
+                  "pink",
+                  "violet"
+                ]
+              }
+            }
+          }
+        ],
+        "x-class": "Filter"
+      },
+      "eq": {
+        "description": "EqualsFilter represents an equals (==) filter",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Filter"
+          },
+          {
+            "type": "object",
+            "required": [
+              "name",
+              "value"
+            ],
+            "properties": {
+              "name": {
+                "description": "Name of the attribute to use for the filter.",
+                "type": "string",
+                "example": "color"
+              },
+              "value": {
+                "description": "Filter value",
+                "example": "pink"
+              }
+            }
+          }
+        ],
+        "x-class": "Filter"
+      },
+      "exists": {
+        "description": "ExistsFilter represents an exists filter",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Filter"
+          },
+          {
+            "type": "object",
+            "required": [
+              "name"
+            ],
+            "properties": {
+              "name": {
+                "description": "Name of the attribute that must exist.",
+                "type": "string",
+                "example": "color"
+              }
+            }
+          }
+        ],
+        "x-class": "Filter"
+      },
+      "geoDistance": {
+        "description": "GeoDistanceFilter represents a geo distance filter",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Filter"
+          },
+          {
+            "type": "object",
+            "required": [
+              "name"
+            ],
+            "properties": {
+              "distance": {
+                "description": "The radius of the circular geographical area where you want Search to find suitable content items.\n\nEnter a number followed by a unit of distance. Don't add spaces. For example, enter 8.6ft or 86km.\n\nYou can use any of the following units:\n\n• in: inches\n\n• ft: feet\n\n• yd: yards\n\n• nmi: nautical miles\n\n• km: kilomters\n\n• m: meters\n\n• cm: centimeters\n\n• mm: millimeters",
+                "type": "string",
+                "example": "5km"
+              },
+              "lat": {
+                "description": "Latitude of the visitor's location. \nTogether, `latitude` and `longitude` define the centre of circle in which you want to filter results.\n\nUse the decimal degrees (DD) format. Don't use spaces. For example, pass `-77.0089`.\n\nIf you do not specify a value here, Search looks in the `geo` context object for a latitude value.\nIf there is no `geo` context object, Search infers the approximate the latitude from the visitor's IP address.",
+                "type": "number",
+                "format": "double"
+              },
+              "lon": {
+                "description": "Longitude of the visitor's location.\nTogether, `latitude` and `longitude` define the centre of circle in which you want to filter results.\n\nUse the decimal degrees (DD) format. Don't use spaces. For example, pass `-120.0017`.\n\nIf you do not specify a value here, Search looks in the `geo` context object for a longitude value.\nIf there is no `geo` context object, Search infers the approximate longitude from the visitor's IP address.",
+                "type": "number",
+                "format": "double"
+              },
+              "name": {
+                "description": "Name of the attribute to use for the filter. The attribute must be of the type `geo`.",
+                "type": "string",
+                "example": "location"
+              }
+            }
+          }
+        ],
+        "x-class": "Filter"
+      },
+      "geoWithin": {
+        "description": "GeoWithinFilter represents a geo within filter",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Filter"
+          },
+          {
+            "type": "object",
+            "required": [
+              "name",
+              "coordinates"
+            ],
+            "properties": {
+              "coordinates": {
+                "description": "Coordinates that form the polygonal area where Search looks for results.\nTogether, `latitude` and `longitude` define one vertex of the polygon. \n\nFor example, if you define four vertexes, Search creates a four-sided area to filter results within.\n\nDefine at least three points.",
+                "type": "array",
+                "minItems": 3,
+                "items": {
+                  "$ref": "#/components/schemas/geoWithinCoordinate"
+                }
+              },
+              "name": {
+                "description": "Name of the attribute to use for the filter. The attribute must be of the type `geo`.",
+                "type": "string",
+                "example": "color"
+              }
+            }
+          }
+        ],
+        "x-class": "Filter"
+      },
+      "geoWithinCoordinate": {
+        "description": "GeoWithinCoordinate represents at least three points that form a polygon where Search looks for results. ",
+        "type": "object",
+        "properties": {
+          "lat": {
+            "description": "Latitude of one vertex of the polygonal area where you want Search to look for results. \n\nUse the decimal degrees (DD) format. Don't use spaces. For example, pass `-77.0089`.",
+            "type": "number",
+            "format": "double"
+          },
+          "lon": {
+            "description": "Longitude of one vertex of the polygonal area where you want Search to look for results.\n\nUse the decimal degrees (DD) format. Don't use spaces. For example, pass `-120.0015`.",
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "gt": {
+        "description": "GreaterThanFilter represents a greater than (>) filter",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Filter"
+          },
+          {
+            "type": "object",
+            "required": [
+              "name",
+              "value"
+            ],
+            "properties": {
+              "name": {
+                "description": "Name of the attribute to use for the filter.",
+                "type": "string",
+                "example": "price"
+              },
+              "value": {
+                "description": "Filter value",
+                "example": "80"
+              }
+            }
+          }
+        ],
+        "x-class": "Filter"
+      },
+      "gte": {
+        "description": "GreaterThanOrEqualFilter represents a greater than or equal (>=) filter",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Filter"
+          },
+          {
+            "type": "object",
+            "required": [
+              "name",
+              "value"
+            ],
+            "properties": {
+              "name": {
+                "description": "Name of the attribute to use for the filter.",
+                "type": "string",
+                "example": "price"
+              },
+              "value": {
+                "description": "Filter value",
+                "example": "80"
+              }
+            }
+          }
+        ],
+        "x-class": "Filter"
+      },
+      "lt": {
+        "description": "LessThanFilter represents a less than (>) filter",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Filter"
+          },
+          {
+            "type": "object",
+            "required": [
+              "name",
+              "value"
+            ],
+            "properties": {
+              "name": {
+                "description": "Name of the attribute to use for the filter.",
+                "type": "string",
+                "example": "price"
+              },
+              "value": {
+                "description": "Filter value",
+                "example": "80"
+              }
+            }
+          }
+        ],
+        "x-class": "Filter"
+      },
+      "lte": {
+        "description": "LessThanOrEqualFilter represents a less than or equal (>=) filter",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Filter"
+          },
+          {
+            "type": "object",
+            "required": [
+              "name",
+              "value"
+            ],
+            "properties": {
+              "name": {
+                "description": "Name of the attribute to use for the filter.",
+                "type": "string",
+                "example": "price"
+              },
+              "value": {
+                "description": "Filter value",
+                "example": "80"
+              }
+            }
+          }
+        ],
+        "x-class": "Filter"
+      },
+      "not": {
+        "description": "NotFilter implements a not operator for the filter provided",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Filter"
+          },
+          {
+            "type": "object",
+            "required": [
+              "filter"
+            ],
+            "properties": {
+              "filter": {
+                "$ref": "#/components/schemas/Filter"
+              }
+            }
+          }
+        ],
+        "x-class": "Filter"
+      },
+      "or": {
+        "description": "OrFilter is a composite filter that joins results with an OR operator",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Filter"
+          },
+          {
+            "type": "object",
+            "required": [
+              "filters"
+            ],
+            "properties": {
+              "filters": {
+                "description": "the or clauses",
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "$ref": "#/components/schemas/Filter"
+                }
+              }
+            }
+          }
+        ],
+        "x-class": "Filter"
+      },
+      "textualMatch": {
+        "description": "TextualMatchFilter represents an textual match filter",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Filter"
+          },
+          {
+            "type": "object",
+            "required": [
+              "keyphrase"
+            ],
+            "properties": {
+              "keyphrase": {
+                "description": "Keyphrase to match documents with.",
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "x-class": "Filter"
+      }
+    }
+  }
+}

@@ -1,0 +1,1094 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "description": "Sitecore Search exposes a RESTful API called the Ingestion API that you can use to create, update,\nor delete index documents. Use this API to make fast updates to your indexed content.\n\nTo view the base URL of this API, log in to the Customer Engagement Console (CEC) and go to Developer Resources > API Access.\n\nImportant: If you use the Ingestion API to update the index of a [pull source](https://doc.sitecore.com/search/en/users/search-user-guide/indexing-content.html),\nwhen the source is [recrawled](https://doc.sitecore.com/search/en/users/search-user-guide/keeping-indexes-up-to-date.html)​​,\nSearch updates all index documents with the latest data from your original content.\nThis means that any updates you made to index documents using the Ingestion API will be overwritten\nif not also made in the original content. To prevent this, we strongly recommend updating your original content\nwith changes made through the Ingestion API. This synchronization ensures that your modifications are maintained in future crawls.\n\nBefore you can use the Ingestion API, you must create a source in the Customer Engagement Console (CEC) and turn on\nENABLE INCREMENTAL UPDATES for that source.\n\nFor more information on how to use this API and for sample requests,\nsee the [Sitecore Search developer documentation](https://doc.sitecore.com/search/en/developers/search-developer-guide/using-the-ingestion-api.html).",
+    "title": "Ingestion API",
+    "version": "1.0.0",
+    "x-logo": {
+      "altText": "Ingestion API Service",
+      "url": "https://content-search-api-doc.rfksrv.com/logo.png"
+    }
+  },
+  "paths": {
+    "/ingestion/v1/domains/{domain}/sources/{source}/entities/{entity}/documents": {
+      "post": {
+        "description": "Create a new index document.",
+        "summary": "Create Document",
+        "operationId": "CreateDocumentRequest",
+        "parameters": [
+          {
+            "example": "987654321",
+            "description": "Numeric domain identifier. You can view this ID in the domain name drop-down in the CEC.",
+            "name": "domain",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 6,
+              "maxLength": 12,
+              "pattern": "\\d+"
+            }
+          },
+          {
+            "example": "web",
+            "description": "ID of the source for which you want to create an index document.\nYou can view this ID in the Administration, Sources, Source Information section of the CEC.",
+            "name": "source",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Entity the index document belongs to.",
+            "name": "entity",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Locale to which this index document will belong. Use the LOCALE IDENTIFIER FORMAT format defined\nin the Administration, General Settings, Locale section of the CEC.",
+            "name": "locale",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/DocumentWrapper"
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/CreateDocumentResponseContainer"
+          },
+          "default": {
+            "$ref": "#/components/responses/CoreErrorResponseContainer"
+          }
+        }
+      }
+    },
+    "/ingestion/v1/domains/{domain}/sources/{source}/entities/{entity}/documents/{documentId}": {
+      "put": {
+        "description": "Update all fields of an index document.",
+        "summary": "Update Document",
+        "operationId": "UpdateDocumentRequest",
+        "parameters": [
+          {
+            "example": "987654321",
+            "description": "Numeric domain identifier. You can view this ID in the domain name drop-down in the CEC.",
+            "name": "domain",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 6,
+              "maxLength": 12,
+              "pattern": "\\d+"
+            }
+          },
+          {
+            "example": "web",
+            "description": "ID of the source for which you want to update an index document.\nYou can view this ID in the Administration, Sources, Source Information section of the CEC.",
+            "name": "source",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "example": "content",
+            "description": "Entity the index document belongs to.",
+            "name": "entity",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "example": "doc123-456",
+            "description": "Unique index document ID. You can view this ID in the Content Collection section of the CEC.",
+            "name": "documentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 20,
+              "pattern": "[\\d|\\w|\\_|\\-]+"
+            }
+          },
+          {
+            "description": "Locale to which this index document will belong.\nUse the LOCALE IDENTIFIER FORMAT format defined in the Administration, General Settings, Locale section of the CEC.",
+            "name": "locale",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/DocumentWrapper"
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/UpdateDocumentResponseContainer"
+          },
+          "default": {
+            "$ref": "#/components/responses/CoreErrorResponseContainer"
+          }
+        }
+      },
+      "delete": {
+        "description": "Delete an index document.",
+        "summary": "Delete Document",
+        "operationId": "DeleteDocumentRequest",
+        "parameters": [
+          {
+            "example": "987654321",
+            "description": "Numeric domain identifier. You can view this ID in the domain name drop-down in the CEC.",
+            "name": "domain",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 6,
+              "maxLength": 12,
+              "pattern": "\\d+"
+            }
+          },
+          {
+            "example": "web",
+            "description": "ID of the source for which you want to delete an index document.\nYou can view this ID in the Adminsitration, Sources, Source Information section of the CEC.",
+            "name": "source",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "example": "content",
+            "description": "Entity the index document belongs to.",
+            "name": "entity",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "example": "doc123-456",
+            "description": "Unique index document ID. You can view this ID in the Content Collection section of the CEC.",
+            "name": "documentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 20,
+              "pattern": "[\\d|\\w|\\_|\\-]+"
+            }
+          },
+          {
+            "description": "Locales in which you want to delete documents. You can pass one, some, or all locales.\nUse the LOCALE IDENTIFIER FORMAT format defined in the Administration, General Settings, Locale section of the CEC.\n\n• To pass more than one locale, separate locales with an `&`. For example, use` locale=en_us&locale=ja_jp`.\n\n• To pass all locales, use `locale=all`.",
+            "name": "locale",
+            "in": "query",
+            "required": true,
+            "style": "form",
+            "explode": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/DeleteDocumentResponseContainer"
+          },
+          "default": {
+            "$ref": "#/components/responses/CoreErrorResponseContainer"
+          }
+        }
+      },
+      "patch": {
+        "description": "Update some fields in an index document.",
+        "summary": "Partial Update Document",
+        "operationId": "PartialUpdateDocumentRequest",
+        "parameters": [
+          {
+            "example": "987654321",
+            "description": "Numeric domain identifier. You can view this ID in the domain name drop-down in the CEC.",
+            "name": "domain",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 6,
+              "maxLength": 12,
+              "pattern": "\\d+"
+            }
+          },
+          {
+            "example": "web",
+            "description": "ID of the source for which you want to partially update an index document.\nYou can view this ID in the Administration, Sources, Source Information section of the CEC.",
+            "name": "source",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "example": "content",
+            "description": "Entity the index document belongs to.",
+            "name": "entity",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "example": "doc123-456",
+            "description": "Unique index document ID. You can view this ID in the Content Collection section of the CEC.",
+            "name": "documentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 20,
+              "pattern": "[\\d|\\w|\\_|\\-]+"
+            }
+          },
+          {
+            "description": "Locales in which you want to make partial updates to documents. You can pass one, some, or all locales.\n\n• To pass more than one locale, separate locales with an `&`. For example, use` locale=en_us&locale=ja_jp`.\n\n• To pass all locales, use `locale=all`.",
+            "name": "locale",
+            "in": "query",
+            "required": true,
+            "style": "form",
+            "explode": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/DocumentWrapper"
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/PartialUpdateDocumentResponseContainer"
+          },
+          "default": {
+            "$ref": "#/components/responses/CoreErrorResponseContainer"
+          }
+        }
+      }
+    },
+    "/ingestion/v1/domains/{domain}/sources/{source}/entities/{entity}/file/{documentId}": {
+      "post": {
+        "description": "Create a new index document from a file.",
+        "summary": "Create Document from File",
+        "operationId": "CreateDocumentFromFileRequest",
+        "parameters": [
+          {
+            "example": "document1",
+            "description": "Unique index document ID. You can view this ID in the Content Collection section of the CEC.\nIf you use the `UPDATE` method and pass a document ID that is different from the original document ID,\nSitecore Search creates a new document instead of updating the existing document.",
+            "name": "documentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "[\\w\\-\\_]+"
+            }
+          },
+          {
+            "example": "987654321",
+            "description": "Numeric domain identifier. You can view this ID in the domain name drop-down in the CEC.",
+            "name": "domain",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 6,
+              "maxLength": 12,
+              "pattern": "\\d+"
+            }
+          },
+          {
+            "example": "web",
+            "description": "ID of the source for which you want to create an index document.\nYou can view this ID in the Administration, Sources, Source Information section of the CEC.",
+            "name": "source",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Entity the index document belongs to.",
+            "name": "entity",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Locale to which this index document will belong. Use the LOCALE IDENTIFIER FORMAT format defined\nin the Administration, General Settings, Locale section of the CEC.",
+            "name": "locale",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "description": "Path to the file from which you want to create an index document. The file must be on the server from which you're making the call.",
+                    "example": "/Users/Jane/Documents/Summer/summer_activites.pdf​",
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "fields": {
+                    "description": "Fixed values for attributes. Use this parameter to override the rules\nof an existing document extractor and assign a fixed value to an attribute.\n\nTo learn how to format this parameter, see the [detailed reference](https://https://doc.sitecore.com/search/en/developers/search-developer-guide/ingestion-api-document-extractor-reference.html).",
+                    "type": "string"
+                  },
+                  "extractor": {
+                    "description": "Rules that define how to extract attribute values.\nUse XPath, JavaScript, or CSS to define these rules.\n\nTo format the `extractor` parameter, refer to the [detailed reference](https://https://doc.sitecore.com/search/en/developers/search-developer-guide/ingestion-api-document-extractor-reference.html).",
+                    "type": "string"
+                  },
+                  "extractorName": {
+                    "description": "Name of the existing document extractor you wish to use for extracting attribute values.\nTo find an existing document extractor's name, in the CEC, navigate  to Sources > select a source > Document Extractors. Paste the extractor's name exactly as it appears in the CEC, including spaces and punctuation.",
+                    "example": "Sitecore doc main JS extractor",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "file"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/CreateDocumentFromFileResponseContainer"
+          },
+          "default": {
+            "$ref": "#/components/responses/CoreErrorResponseContainer"
+          }
+        }
+      }
+    },
+    "/ingestion/v1/domains/{domain}/sources/{source}/entities/{entity}/status/{incrementalUpdateId}": {
+      "get": {
+        "description": "Get the status of an update made through the Ingestion API.",
+        "summary": "Get status of an incremental update",
+        "operationId": "IncrementalUpdateStatusRequest",
+        "parameters": [
+          {
+            "example": "987654321",
+            "description": "Numeric domain identifier. You can view this ID in the domain name drop-down in the CEC.",
+            "name": "domain",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 6,
+              "maxLength": 12,
+              "pattern": "\\d+"
+            }
+          },
+          {
+            "example": "web",
+            "description": "ID of the source for which you want to partially update an index document.\nYou can view this ID in the Administration, Sources, Source Information section of the CEC.",
+            "name": "source",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "example": "content",
+            "description": "Entity the index document belongs to.",
+            "name": "entity",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "example": "2e581bf5-c2b7-337e-7bda-6c2d22641618",
+            "description": "Incremental Update Id",
+            "name": "incrementalUpdateId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/IncrementalUpdateStatusResponseContainer"
+          },
+          "default": {
+            "$ref": "#/components/responses/IncrementalUpdateStatusResponseContainer"
+          }
+        }
+      }
+    },
+    "/ingestion/v1/domains/{domain}/sources/{source}/entities/{entity}/url/{documentId}": {
+      "post": {
+        "description": "Create a new index document from a file at url.",
+        "summary": "Create Document from a File at url",
+        "operationId": "CreateDocumentFromUrlRequest",
+        "parameters": [
+          {
+            "example": "document1",
+            "description": "Unique index document ID. You can view this ID in the Content Collection section of the CEC.\nIf you use the `UPDATE` method and pass a document ID that is different from the original document ID,\nSitecore Search creates a new document instead of updating the existing document.",
+            "name": "documentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "[\\w\\-\\_]+"
+            }
+          },
+          {
+            "example": "987654321",
+            "description": "Numeric domain identifier. You can view this ID in the domain name drop-down in the CEC.",
+            "name": "domain",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 6,
+              "maxLength": 12,
+              "pattern": "\\d+"
+            }
+          },
+          {
+            "example": "web",
+            "description": "ID of the source for which you want to create an index document.\nYou can view this ID in the Administration, Sources, Source Information section of the CEC.",
+            "name": "source",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Entity the index document belongs to.",
+            "name": "entity",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Locale to which this index document will belong. Use the LOCALE IDENTIFIER FORMAT format defined\nin the Administration, General Settings, Locale section of the CEC.",
+            "name": "locale",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "description": "URL of the original item from which you want to create an index document.",
+                    "example": "https://www.mybank.com/mortagages/fixed",
+                    "type": "string"
+                  },
+                  "fields": {
+                    "description": "Fixed values for attributes. Use this parameter to override the rules\nof an existing document extractor and assign a fixed value to an attribute.\n\nTo learn how to format this parameter, see the [detailed reference](https://https://doc.sitecore.com/search/en/developers/search-developer-guide/ingestion-api-document-extractor-reference.html).",
+                    "type": "string"
+                  },
+                  "extractor": {
+                    "description": "Logic that define how to extract attribute values.\nUse XPath, JavaScript, or CSS to define these rules.\n\nto format the `extractor` parameter, refer to the [detailed reference](https://https://doc.sitecore.com/search/en/developers/search-developer-guide/ingestion-api-document-extractor-reference.html).",
+                    "type": "string"
+                  },
+                  "extractorName": {
+                    "description": "Name of the existing document extractor you wish to use for extracting attribute values.\nTo find an existing document extractor's name, in the CEC, navigate  to Sources > select a source > Document Extractors.\nPaste the extractor's name exactly as it appears in the CEC, including spaces and punctuation.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "url"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/CreateDocumentFromUrlResponseContainer"
+          },
+          "default": {
+            "$ref": "#/components/responses/CoreErrorResponseContainer"
+          }
+        }
+      }
+    }
+  },
+  "tags": [],
+  "servers": [
+    {
+      "url": "http://localhost:8205"
+    }
+  ],
+  "components": {
+    "responses": {
+      "CoreErrorResponseContainer": {
+        "description": "an error response used when something failed during the execution of the endpoint implementation",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/CoreErrorResponse"
+            }
+          }
+        }
+      },
+      "CreateDocumentFromFileResponse": {
+        "description": "",
+        "headers": {
+          "incremental_update_id": {
+            "description": "Unique Sitecore-created identifier for this request to the Ingestion API.\nWe recommend that you save this ID, because you'll need it to identify the original request\nif you want to check later.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "CreateDocumentFromFileResponseContainer": {
+        "description": "the document that was created",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/CreateDocumentFromFileResponse"
+            }
+          }
+        }
+      },
+      "CreateDocumentFromUrlResponse": {
+        "description": "",
+        "headers": {
+          "incremental_update_id": {
+            "description": "Unique Sitecore-created identifier for this request to the Ingestion API.\nWe recommend that you save this ID, because you'll need it to identify the original request\nif you want to check later.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "CreateDocumentFromUrlResponseContainer": {
+        "description": "the document that was created",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/CreateDocumentFromUrlResponse"
+            }
+          }
+        }
+      },
+      "CreateDocumentResponse": {
+        "description": "",
+        "headers": {
+          "incremental_update_id": {
+            "description": "Unique Sitecore-created identifier for this request to the Ingestion API.\nWe recommend that you save this ID, because you'll need it to identify the original request\nif you want to check later.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "CreateDocumentResponseContainer": {
+        "description": "the document that was created",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/CreateDocumentResponse"
+            }
+          }
+        }
+      },
+      "DeleteDocumentResponse": {
+        "description": "",
+        "headers": {
+          "enqueued": {
+            "example": true,
+            "description": "If `true`, your request was successful and Sitecore Search has enqueued the request. You will see the update soon.\nrequired: true",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          "incremental_update_ids": {
+            "description": "Unique Sitecore-created identifier for this request to the Ingestion API. We recommend that you save this ID, as as you'll need it to identify the original request if you later want to check the status of your update.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "style": "simple"
+          }
+        }
+      },
+      "DeleteDocumentResponseContainer": {
+        "description": "Success",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/DeleteDocumentResponse"
+            }
+          }
+        }
+      },
+      "HealthResponseContainer": {
+        "description": "a health response denoting the status of the service",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/HealthResponse"
+            }
+          }
+        }
+      },
+      "IncrementalUpdateStatusResponse": {
+        "description": ""
+      },
+      "IncrementalUpdateStatusResponseContainer": {
+        "description": "",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/IncrementalUpdateStatusResponse"
+            }
+          }
+        }
+      },
+      "OnIncrementalChangeResponse": {
+        "description": ""
+      },
+      "PartialUpdateDocumentResponse": {
+        "description": "",
+        "headers": {
+          "incremental_update_ids": {
+            "description": "Unique Sitecore-created identifier for this request to the Ingestion API. We recommend that you save this ID, as as you'll need it to identify the original request if you later want to check the status of your update.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "style": "simple"
+          }
+        }
+      },
+      "PartialUpdateDocumentResponseContainer": {
+        "description": "Success",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/PartialUpdateDocumentResponse"
+            }
+          }
+        }
+      },
+      "PingResponseContainer": {
+        "description": "a ping response indicating if the service is able to reply",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/PingResponse"
+            }
+          }
+        }
+      },
+      "UpdateDocumentResponse": {
+        "description": "",
+        "headers": {
+          "incremental_update_id": {
+            "description": "Unique Sitecore-created identifier for this request to the Ingestion API.\nWe recommend that you save this ID, because you'll need it to identify the original request\nif you want to check later.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "UpdateDocumentResponseContainer": {
+        "description": "the document that was updated",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/UpdateDocumentResponse"
+            }
+          }
+        }
+      }
+    },
+    "requestBodies": {
+      "DocumentWrapper": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/DocumentWrapper"
+            }
+          }
+        },
+        "required": true
+      }
+    },
+    "schemas": {
+      "CoreErrorResponse": {
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "description": "the error object",
+            "type": "object",
+            "required": [
+              "code"
+            ],
+            "properties": {
+              "code": {
+                "description": "the error code",
+                "type": "integer",
+                "format": "int64",
+                "example": 404
+              },
+              "message": {
+                "description": "the error message",
+                "type": "string",
+                "example": "failed to find resource"
+              },
+              "type": {
+                "description": "the error type",
+                "type": "string",
+                "example": "NotFoundError"
+              }
+            }
+          }
+        }
+      },
+      "CreateDocumentFromFileResponse": {
+        "type": "object",
+        "properties": {
+          "enqueued": {
+            "description": "If `true`, your request was successful and Sitecore Search has enqueued the request. You will see the update soon.\nin: body",
+            "type": "boolean"
+          },
+          "incremental_update_id": {
+            "description": "Unique Sitecore-created identifier for this request to the Ingestion API.\nWe recommend that you save this ID, because you'll need it to identify the original request\nif you want to check later.",
+            "type": "string"
+          }
+        }
+      },
+      "CreateDocumentFromUrlResponse": {
+        "type": "object",
+        "properties": {
+          "enqueued": {
+            "description": "If `true`, your request was successful and Sitecore Search has enqueued the request. You will see the update soon.\nin: body",
+            "type": "boolean"
+          },
+          "incremental_update_id": {
+            "description": "Unique Sitecore-created identifier for this request to the Ingestion API.\nWe recommend that you save this ID, because you'll need it to identify the original request\nif you want to check later.",
+            "type": "string"
+          }
+        }
+      },
+      "CreateDocumentResponse": {
+        "type": "object",
+        "properties": {
+          "enqueued": {
+            "description": "If `true`, your request was successful and Sitecore Search has enqueued the request. You will see the update soon.\nin: body",
+            "type": "boolean"
+          },
+          "incremental_update_id": {
+            "description": "Unique Sitecore-created identifier for this request to the Ingestion API.\nWe recommend that you save this ID, because you'll need it to identify the original request\nif you want to check later.",
+            "type": "string"
+          }
+        }
+      },
+      "DeleteDocumentResponse": {
+        "type": "object",
+        "required": [
+          "enqueued"
+        ],
+        "properties": {
+          "enqueued": {
+            "description": "If `true`, your request was successful and Sitecore Search has enqueued the request. You will see the update soon.",
+            "type": "boolean",
+            "example": true
+          },
+          "incremental_update_ids": {
+            "description": "Unique Sitecore-created identifier for this request to the Ingestion API. We recommend that you save this ID, as as you'll need it to identify the original request if you later want to check the status of your update.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "Document": {
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "fields": {
+            "description": "The fields that this document will contain in a `key-value` format\nwhere the `key` is the field name and the `value` is the value of the field for this document.\nYou must pass all fields marked as REQUIRED in the Administration, Domain Settings, Attributes section of the CEC.\nIf you do not pass a required field, you get an error and Search will be unable to create or update\nthe index document.",
+            "type": "object",
+            "additionalProperties": {},
+            "example": {
+              "description": "Hype around the new search technology",
+              "title": "Flashing News - Sitecore acquires RFK"
+            }
+          },
+          "id": {
+            "description": "Unique index document ID. You can view this ID in the Content Collection section of the CEC.\nIf you use the `UPDATE` method and pass a document ID that is different from the original document ID,\nSitecore Search creates a new document instead of updating the existing document.",
+            "type": "string",
+            "pattern": "[\\w\\-\\_]+",
+            "example": "document1"
+          }
+        }
+      },
+      "DocumentExtractorConfig": {
+        "type": "object",
+        "required": [
+          "type",
+          "source"
+        ],
+        "properties": {
+          "rules": {
+            "description": "the list of css/xpath/jsonpath rules to extract content",
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/RuleConfig"
+            }
+          },
+          "source": {
+            "description": "the JS source code for extracting documents",
+            "type": "string"
+          },
+          "type": {
+            "description": "the document extractor type",
+            "type": "string",
+            "enum": [
+              "css",
+              "xpath",
+              "jsonpath",
+              "js"
+            ]
+          }
+        }
+      },
+      "DocumentWrapper": {
+        "type": "object",
+        "required": [
+          "document"
+        ],
+        "properties": {
+          "document": {
+            "$ref": "#/components/schemas/Document"
+          }
+        }
+      },
+      "Fields": {
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "properties": {
+          "items": {
+            "type": "object",
+            "additionalProperties": {}
+          }
+        }
+      },
+      "HealthResponse": {
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "properties": {
+          "gitcommit": {
+            "description": "the git commit hash of the running code",
+            "type": "string",
+            "example": "gitcommit123456"
+          },
+          "status": {
+            "description": "the color-coded status of the service",
+            "type": "string",
+            "example": "green"
+          }
+        }
+      },
+      "IncrementalUpdateEvent": {
+        "type": "object",
+        "properties": {
+          "domainId": {
+            "type": "string"
+          },
+          "entity": {
+            "type": "string"
+          },
+          "fields": {
+            "type": "object",
+            "additionalProperties": {}
+          },
+          "id": {
+            "type": "string"
+          },
+          "incrementalUpdateId": {
+            "type": "string"
+          },
+          "isDocumentInitialized": {
+            "type": "boolean"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "operation": {
+            "type": "string"
+          },
+          "received_at_ts": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "source": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          }
+        }
+      },
+      "IncrementalUpdateStatusResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "description": "Status of your request. The possible values are:\n\n•`finished` - the request was successful. The index document has been created, updated, or deleted.\n\n• `running` - the request is still in progress. Check again later.\n\n• `failed` - the request has failed and the index document was not created, updated, or deleted. Retry the request.\nPossible Values are - failed, running and finished\nin: body",
+            "type": "string"
+          }
+        }
+      },
+      "PartialUpdateDocumentResponse": {
+        "type": "object",
+        "properties": {
+          "enqueued": {
+            "description": "If `true`, your request was successful and Sitecore Search has enqueued the request. You will see the update soon.\nin: body",
+            "type": "boolean"
+          },
+          "incremental_update_ids": {
+            "description": "Unique Sitecore-created identifier for this request to the Ingestion API. We recommend that you save this ID, as as you'll need it to identify the original request if you later want to check the status of your update.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "PingResponse": {
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "properties": {
+          "status": {
+            "description": "the status of the service",
+            "type": "string",
+            "example": "ok"
+          }
+        }
+      },
+      "RuleConfig": {
+        "type": "object",
+        "required": [
+          "selectors"
+        ],
+        "properties": {
+          "selectors": {
+            "description": "the list of css/xpath/jsonpath selectors",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RuleSelectorConfig"
+            }
+          },
+          "value": {
+            "description": "the fixed value",
+            "type": "string"
+          }
+        }
+      },
+      "RuleSelectorConfig": {
+        "type": "object",
+        "required": [
+          "expression"
+        ],
+        "properties": {
+          "attribute": {
+            "description": "tag attribute name to extract text content (only for css)",
+            "type": "string"
+          },
+          "default": {
+            "description": "the default value to use if the value extracted is empty",
+            "type": "string"
+          },
+          "expression": {
+            "description": "css selector/xpath expression/jsonpath expression to extract text content",
+            "type": "string"
+          }
+        }
+      },
+      "UpdateDocumentResponse": {
+        "type": "object",
+        "properties": {
+          "enqueued": {
+            "description": "If `true`, your request was successful and Sitecore Search has enqueued the request. You will see the update soon.\nin: body",
+            "type": "boolean"
+          },
+          "incremental_update_id": {
+            "description": "Unique Sitecore-created identifier for this request to the Ingestion API.\nWe recommend that you save this ID, because you'll need it to identify the original request\nif you want to check later.",
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

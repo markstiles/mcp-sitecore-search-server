@@ -1,0 +1,31 @@
+# Ignore source files (only publish built dist/)
+src/
+tsconfig.json
+
+# Ignore test files
+test/
+*.test.js
+*.spec.js
+
+# Ignore development files
+.vscode/
+.idea/
+.DS_Store
+*.swp
+*.swo
+
+# Ignore environment and config
+.env
+.env.*
+.npmrc
+
+# Ignore CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+
+# Ignore documentation build artifacts
+docs/
+
+# Ignore specs (keep them in git but not in npm package)
+specs/
