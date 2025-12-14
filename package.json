@@ -1,5 +1,5 @@
 {
-  "name": "@markstiles/mcp-search-server",
+  "name": "@markstiles/sitecore-search-mcp",
   "version": "1.0.0",
   "description": "Model Context Protocol server for Sitecore Search APIs (Search, Ingestion, and Events)",
   "type": "module",
