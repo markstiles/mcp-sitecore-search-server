@@ -66,10 +66,10 @@ mcp-sitecore-search-server/
 
 ```bash
 # Install globally
-npm install -g @markstiles/mcp-search-server
+npm install -g @markstiles/sitecore-search-mcp
 
 # Or use with npx (no installation needed)
-npx @markstiles/mcp-search-server
+npx @markstiles/sitecore-search-mcp
 ```
 
 ### From Source
@@ -197,7 +197,7 @@ Configure in your MCP client (e.g., Claude Desktop):
       "command": "npx",
       "args": [
         "-y",
-        "@markstiles/mcp-search-server"
+        "@markstiles/sitecore-search-mcp"
       ],
       "env": {
         "SITECORE_DOMAIN_ID": "12345678",
@@ -212,7 +212,7 @@ Configure in your MCP client (e.g., Claude Desktop):
 #### Using Global Installation
 
 ```bash
-npm install -g @markstiles/mcp-search-server
+npm install -g @markstiles/sitecore-search-mcp
 ```
 
 ```json

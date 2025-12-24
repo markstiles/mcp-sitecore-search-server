@@ -10,7 +10,7 @@ Your package is ready to publish! Here's what has been configured:
 - ✅ **keywords** expanded - Better discoverability on npm
 - ✅ **repository** field - Links to GitHub repo (update with your actual URL)
 - ✅ **author** field - Update with your name and email
-- ✅ **bin** field - Allows `npx @markstiles/mcp-search-server` to work
+- ✅ **bin** field - Allows `npx @markstiles/sitecore-search-mcp` to work
 
 ### Files Created
 - ✅ `.npmignore` - Excludes test files, source files, and development artifacts
@@ -42,7 +42,7 @@ Edit `package.json` (replace with your actual GitHub username/org):
 
 ### 3. Package Name
 
-The package is configured as: `@markstiles/mcp-search-server`
+The package is configured as: `@markstiles/sitecore-search-mcp`
 
 This uses your npm username as the scope, which you automatically own.
 
@@ -74,7 +74,7 @@ This uses your npm username as the scope, which you automatically own.
 3. **Test the package locally** (optional but recommended):
    ```bash
    npm pack
-   # This creates: sitecore-mcp-search-server-1.0.0.tgz
+   # This creates: sitecore-sitecore-search-mcp-1.0.0.tgz
    # Test it in another project
    ```
 
@@ -93,17 +93,17 @@ This uses your npm username as the scope, which you automatically own.
 
 Visit your package on npm:
 ```
-https://www.npmjs.com/package/@markstiles/mcp-search-server
+https://www.npmjs.com/package/@markstiles/sitecore-search-mcp
 ```
 
 ### Test Installation
 
 ```bash
 # Test global installation
-npm install -g @markstiles/mcp-search-server
+npm install -g @markstiles/sitecore-search-mcp
 
 # Test npx usage
-npx @markstiles/mcp-search-server --help
+npx @markstiles/sitecore-search-mcp --help
 ```
 
 ### Update Documentation
@@ -137,10 +137,10 @@ Users can then install and use your package:
 ### Installation
 ```bash
 # Install globally
-npm install -g @markstiles/mcp-search-server
+npm install -g @markstiles/sitecore-search-mcp
 
 # Or use with npx (no installation)
-npx @markstiles/mcp-search-server
+npx @markstiles/sitecore-search-mcp
 ```
 
 ### MCP Client Configuration
@@ -152,7 +152,7 @@ In Claude Desktop config (`claude_desktop_config.json`):
   "mcpServers": {
     "sitecore-search": {
       "command": "npx",
-      "args": ["-y", "@markstiles/mcp-search-server"],
+      "args": ["-y", "@markstiles/sitecore-search-mcp"],
       "env": {
         "SITECORE_DOMAIN_ID": "your-domain-id",
         "SITECORE_CLIENT_KEY": "your-client-key",
@@ -178,7 +178,7 @@ In Claude Desktop config (`claude_desktop_config.json`):
 npm pack --dry-run
 
 # View package contents
-tar -tzf sitecore-mcp-search-server-1.0.0.tgz
+tar -tzf sitecore-sitecore-search-mcp-1.0.0.tgz
 
 # Login to npm
 npm login
@@ -190,10 +190,10 @@ npm publish --access public
 npm publish
 
 # View package info
-npm view @markstiles/mcp-search-server
+npm view @markstiles/sitecore-search-mcp
 
 # Unpublish a version (within 72 hours)
-npm unpublish @markstiles/mcp-search-server@1.0.0
+npm unpublish @markstiles/sitecore-search-mcp@1.0.0
 ```
 
 ## ✨ You're Ready!

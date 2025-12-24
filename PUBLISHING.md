@@ -33,7 +33,7 @@ Enter your npm username, password, and email when prompted.
 
 ### 3. Configure Scoped Package (Optional)
 
-If publishing under a scope (e.g., `@markstiles/mcp-search-server`), you may need to:
+If publishing under a scope (e.g., `@markstiles/sitecore-search-mcp`), you may need to:
 
 **For Public Scoped Package:**
 ```bash
@@ -83,10 +83,10 @@ Test your package before publishing:
 # Create a tarball
 npm pack
 
-# This creates a file like: sitecore-mcp-search-server-1.0.0.tgz
+# This creates a file like: sitecore-sitecore-search-mcp-1.0.0.tgz
 # Install it in another project to test:
 cd /path/to/test-project
-npm install /path/to/mcp-sitecore-search-server/sitecore-mcp-search-server-1.0.0.tgz
+npm install /path/to/mcp-sitecore-search-server/sitecore-sitecore-search-mcp-1.0.0.tgz
 ```
 
 ### Step 4: Publish to npm
@@ -105,7 +105,7 @@ npm publish
 
 Visit your package on npm:
 ```
-https://www.npmjs.com/package/@markstiles/mcp-search-server
+https://www.npmjs.com/package/@markstiles/sitecore-search-mcp
 ```
 
 ## Using the Published Package
@@ -113,12 +113,12 @@ https://www.npmjs.com/package/@markstiles/mcp-search-server
 Once published, users can install it:
 
 ```bash
-npm install @sitecore/mcp-search-server
+npm install @sitecore/sitecore-search-mcp
 ```
 
 Or install globally:
 ```bash
-npm install -g @sitecore/mcp-search-server
+npm install -g @sitecore/sitecore-search-mcp
 ```
 
 ## MCP Client Configuration
@@ -132,7 +132,7 @@ After publishing, users can configure the MCP server in their MCP clients (e.g.,
       "command": "npx",
       "args": [
         "-y",
-        "@sitecore/mcp-search-server"
+        "@sitecore/sitecore-search-mcp"
       ],
       "env": {
         "SITECORE_DOMAIN_ID": "your-domain-id",
@@ -174,12 +174,12 @@ To publish a new version:
 
 To unpublish a specific version:
 ```bash
-npm unpublish @sitecore/mcp-search-server@1.0.0
+npm unpublish @sitecore/sitecore-search-mcp@1.0.0
 ```
 
 To unpublish entire package (only within 72 hours):
 ```bash
-npm unpublish @sitecore/mcp-search-server --force
+npm unpublish @sitecore/sitecore-search-mcp --force
 ```
 
 **Warning:** Unpublishing is not recommended as it can break dependencies.

@@ -44,7 +44,10 @@ export interface SearchWidgetItem {
       name: string;
       type?: string;
       values?: string[];
-    }>;
+    }> | {
+      all?: boolean;
+      max?: number;
+    };
     filter?: Record<string, unknown>;
     sort?: {
       [key: string]: 'asc' | 'desc';

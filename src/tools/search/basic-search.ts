@@ -16,6 +16,8 @@ export const BasicSearchSchema = z.object({
     language: z.string().optional(),
     country: z.string().optional(),
   }).optional().describe('Locale settings for the search'),
+  includeFacets: z.boolean().optional().default(false).describe('Include all facets in the response'),
+  maxFacets: z.number().optional().default(10).describe('Maximum number of facet values to return'),
 });
 
 export type BasicSearchInput = z.infer<typeof BasicSearchSchema>;
@@ -39,6 +41,10 @@ export async function executeBasicSearch(
             query: params.keyphrase ? { keyphrase: params.keyphrase } : undefined,
             offset: ((params.page || 1) - 1) * (params.limit || 24),
             limit: params.limit || 24,
+            facet: params.includeFacets ? {
+              all: true,
+              max: params.maxFacets || 10,
+            } : undefined,
           },
         },
       ],
