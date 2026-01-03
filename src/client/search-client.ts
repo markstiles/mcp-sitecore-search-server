@@ -37,6 +37,9 @@ export interface SearchWidgetItem {
   rfk_id: string;
   entity?: string;
   search?: {
+    content?: {
+      fields?: string[];
+    };
     query?: {
       keyphrase?: string;
     };

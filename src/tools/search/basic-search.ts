@@ -18,6 +18,7 @@ export const BasicSearchSchema = z.object({
   }).optional().describe('Locale settings for the search'),
   includeFacets: z.boolean().optional().default(false).describe('Include all facets in the response'),
   maxFacets: z.number().optional().default(10).describe('Maximum number of facet values to return'),
+  fields: z.array(z.string()).optional().describe('Specific fields/attributes to return for each content item (e.g., ["name", "description", "price"])'),
 });
 
 export type BasicSearchInput = z.infer<typeof BasicSearchSchema>;
@@ -38,6 +39,9 @@ export async function executeBasicSearch(
           rfk_id: params.rfkId,
           entity: params.entity,
           search: {
+            content: params.fields ? {
+              fields: params.fields,
+            } : undefined,
             query: params.keyphrase ? { keyphrase: params.keyphrase } : undefined,
             offset: ((params.page || 1) - 1) * (params.limit || 24),
             limit: params.limit || 24,
